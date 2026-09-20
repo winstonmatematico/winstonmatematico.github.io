@@ -23,6 +23,10 @@
       <a href="#pesquisa">Pesquisa</a>
       <a href="#ensino">Ensino</a>
       <a href="#contato">Contato</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema claro/escuro" title="Alternar tema">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2.5M12 19v2.5M4.5 12H2M22 12h-2.5M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z"/></svg>
+      </button>
     </nav>
   </div>
 </header>
@@ -30,62 +34,88 @@
 <main>
 
   <section id="topo" class="hero">
-    <div class="wrap">
-      <p class="eyebrow">Portfólio acadêmico</p>
-      <h1>Prof. Dr. Winston Aparecido Andrade</h1>
-      <p class="hero-sub">Professor universitário e pesquisador em lógica fuzzy e métodos de decisão multicritério, com foco em Fuzzy AHP aplicado à logística e à análise de risco.</p>
-      <div class="hero-actions">
-        <a href="#pesquisa" class="btn btn-primary">Conheça a pesquisa</a>
-        <a href="#contato" class="btn btn-outline">Contato</a>
+    <div class="wrap hero-inner">
+      <div class="hero-text">
+        <p class="eyebrow">Portfólio acadêmico</p>
+        <h1>Prof. Dr. Winston Aparecido Andrade</h1>
+        <p class="hero-sub">Professor universitário e pesquisador em lógica fuzzy e métodos de decisão multicritério, com foco em Fuzzy AHP aplicado à logística e à análise de risco.</p>
+        <div class="hero-actions">
+          <a href="#pesquisa" class="btn btn-primary">Conheça a pesquisa</a>
+          <a href="#contato" class="btn btn-outline">Contato</a>
+        </div>
+      </div>
+      <div class="hero-photo">
+        <img src="foto-winston.jpg" alt="Foto de Winston Aparecido Andrade" width="220" height="220">
+      </div>
+    </div>
+  </section>
+
+  <section class="stats reveal">
+    <div class="wrap stats-grid">
+      <div class="stat-tile">
+        <span class="stat-value">20+</span>
+        <span class="stat-label">anos de experiência na indústria antes da carreira acadêmica</span>
+      </div>
+      <div class="stat-tile">
+        <span class="stat-value">2015</span>
+        <span class="stat-label">ano em que iniciou a docência na FATEC Zona Sul</span>
+      </div>
+      <div class="stat-tile">
+        <span class="stat-value">2024</span>
+        <span class="stat-label">ano de conclusão do doutorado em Fuzzy AHP</span>
+      </div>
+      <div class="stat-tile">
+        <span class="stat-value">2</span>
+        <span class="stat-label">instituições de ensino superior atualmente</span>
       </div>
     </div>
   </section>
 
   <section id="sobre" class="section">
     <div class="wrap">
-      <h2>Sobre mim</h2>
-      <p>
+      <h2><svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M6 10.5V16c0 1.1 2.7 3 6 3s6-1.9 6-3v-5.5"/><path d="M22 8v6"/></svg> Sobre mim</h2>
+      <p class="reveal">
         Sou professor universitário em São Paulo, atuando na FATEC Zona Sul e na Universidade São Judas Tadeu,
         onde leciono disciplinas nas áreas de engenharia de dados, logística e desenvolvimento de software.
         Antes de ingressar na carreira acadêmica, atuei por mais de vinte anos na indústria, em eletrônica e automação,
         experiência que hoje une teoria e prática nas aulas que ministro.
       </p>
-      <p>
+      <p class="reveal">
         Minha pesquisa se concentra em lógica fuzzy e em métodos de apoio à decisão multicritério, com destaque para o
         método Fuzzy AHP, aplicado principalmente a problemas de logística e de análise de risco.
       </p>
 
       <h3>Formação acadêmica</h3>
       <ul class="timeline">
-        <li>
+        <li class="reveal">
           <span class="timeline-year">2024</span>
           <div>
             <strong>Doutorado em Informática e Gestão do Conhecimento</strong>
             <p>Universidade Nove de Julho (UNINOVE), Programa de Pós-Graduação em Informática e Gestão do Conhecimento (PPGI)</p>
           </div>
         </li>
-        <li>
+        <li class="reveal">
           <span class="timeline-year">—</span>
           <div>
             <strong>Mestrado em Administração de Empresas</strong>
             <p>UNIFACCAMP</p>
           </div>
         </li>
-        <li>
+        <li class="reveal">
           <span class="timeline-year">—</span>
           <div>
             <strong>Pós-graduação Lato Sensu em Matemática Aplicada</strong>
             <p>Universidade de Santo Amaro (UNISA)</p>
           </div>
         </li>
-        <li>
+        <li class="reveal">
           <span class="timeline-year">—</span>
           <div>
             <strong>Bacharelado em Engenharia de Produção</strong>
             <p>Universidade Nove de Julho (UNINOVE)</p>
           </div>
         </li>
-        <li>
+        <li class="reveal">
           <span class="timeline-year">2002</span>
           <div>
             <strong>Licenciatura em Matemática com Habilitação em Informática</strong>
@@ -98,14 +128,14 @@
 
   <section id="pesquisa" class="section section-alt">
     <div class="wrap">
-      <h2>Pesquisa e publicações</h2>
-      <p>
+      <h2><svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2.5h6"/><path d="M10 2.5v5.8L4.8 18.2A2 2 0 0 0 6.6 21h10.8a2 2 0 0 0 1.8-2.8L14 8.3V2.5"/><path d="M7.5 15h9"/></svg> Pesquisa e publicações</h2>
+      <p class="reveal">
         Meu trabalho de doutorado aplicou o método Fuzzy AHP à análise de risco no transporte de produtos perigosos,
         unindo modelagem multicritério e lógica fuzzy para lidar com a incerteza inerente a esse tipo de decisão.
       </p>
 
-      <div class="card">
-        <h3>Tese de doutorado</h3>
+      <div class="card reveal">
+        <h3><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v14.5"/><path d="M4 19.5A1.5 1.5 0 0 0 5.5 21H19"/><path d="M8 7h8M8 11h8"/></svg> Tese de doutorado</h3>
         <p class="card-title">
           Análise do Transporte Rodoviário de Produtos Perigosos Classe 1 – Explosivos:
           Uma Abordagem Utilizando o Método Fuzzy AHP
@@ -131,16 +161,56 @@
         <li>Artigos publicados em periódicos e eventos sobre logística, gestão de estoque e transporte de produtos perigosos</li>
         <li>Livro publicado sobre conceitos de gestão (2014)</li>
       </ul>
+
+      <div class="demo-card reveal">
+        <h3>
+          <svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h6M4 12h10M4 18h4"/><circle cx="14" cy="6" r="2"/><circle cx="18" cy="18" r="2"/></svg>
+          Simulador: como o Fuzzy AHP pondera critérios
+        </h3>
+        <p class="card-meta">Demonstração simplificada e apenas ilustrativa do método</p>
+        <p>
+          Ajuste a importância relativa de cada critério (escala de 1 a 9, como nas comparações par a par do AHP).
+          Cada valor é tratado como um número fuzzy triangular e defuzzificado pelo método do centroide para gerar o peso final.
+        </p>
+
+        <div class="fuzzy-demo" id="fuzzyDemo">
+          <div class="fuzzy-row" data-crit="Custo">
+            <div class="fuzzy-row-head">
+              <label for="critCusto">Custo</label>
+              <span class="fuzzy-value" id="valCusto">5</span>
+            </div>
+            <input type="range" min="1" max="9" value="5" id="critCusto" class="fuzzy-slider">
+            <div class="fuzzy-bar-track"><div class="fuzzy-bar" id="barCusto"></div></div>
+          </div>
+          <div class="fuzzy-row" data-crit="Segurança">
+            <div class="fuzzy-row-head">
+              <label for="critSeguranca">Segurança</label>
+              <span class="fuzzy-value" id="valSeguranca">7</span>
+            </div>
+            <input type="range" min="1" max="9" value="7" id="critSeguranca" class="fuzzy-slider">
+            <div class="fuzzy-bar-track"><div class="fuzzy-bar" id="barSeguranca"></div></div>
+          </div>
+          <div class="fuzzy-row" data-crit="Prazo">
+            <div class="fuzzy-row-head">
+              <label for="critPrazo">Prazo</label>
+              <span class="fuzzy-value" id="valPrazo">4</span>
+            </div>
+            <input type="range" min="1" max="9" value="4" id="critPrazo" class="fuzzy-slider">
+            <div class="fuzzy-bar-track"><div class="fuzzy-bar" id="barPrazo"></div></div>
+          </div>
+        </div>
+        <p class="fuzzy-note">Os percentuais mostram o peso relativo de cada critério após a defuzzificação, somando sempre 100%.</p>
+      </div>
     </div>
   </section>
 
   <section id="ensino" class="section">
     <div class="wrap">
-      <h2>Ensino</h2>
+      <h2><svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-5 9 5v12"/><path d="M9 21v-6h6v6"/></svg> Ensino</h2>
 
       <div class="teaching-grid">
-        <div class="card">
-          <h3>FATEC Zona Sul</h3>
+        <div class="card reveal">
+          <h3><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V9l7-5 7 5v12"/><path d="M9 21v-4h6v4"/><path d="M9 12h.01M12 12h.01M15 12h.01"/></svg> FATEC Zona Sul</h3>
           <p class="card-meta">Centro Paula Souza · desde 2015</p>
           <ul class="topic-list">
             <li>Simulação em Logística (software ARENA)</li>
@@ -157,8 +227,8 @@
             Análise e Desenvolvimento de Sistemas e Desenvolvimento de Software Multiplataforma
           </p>
         </div>
-        <div class="card">
-          <h3>Universidade São Judas Tadeu</h3>
+        <div class="card reveal">
+          <h3><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M6 21V6l6-3 6 3v15"/><path d="M10 21v-5h4v5"/><path d="M10 9h.01M14 9h.01M10 13h.01M14 13h.01"/></svg> Universidade São Judas Tadeu</h3>
           <p class="card-meta">Desde agosto de 2026</p>
           <ul class="topic-list">
             <li>Análise de Dados e Big Data</li>
@@ -172,9 +242,9 @@
 
   <section id="contato" class="section section-alt">
     <div class="wrap">
-      <h2>Contato</h2>
-      <p>Fico à disposição para conversar sobre pesquisa, parcerias acadêmicas ou oportunidades de ensino.</p>
-      <a class="btn btn-primary" href="mailto:winstonmatematico@gmail.com">winstonmatematico@gmail.com</a>
+      <h2><svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg> Contato</h2>
+      <p class="reveal">Fico à disposição para conversar sobre pesquisa, parcerias acadêmicas ou oportunidades de ensino.</p>
+      <a class="btn btn-primary reveal" href="mailto:winstonmatematico@gmail.com">winstonmatematico@gmail.com</a>
     </div>
   </section>
 
