@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logaritmo na vida real: como achar uma agulha em um milhão de palheiros em 20 passos | Winston Aparecido Andrade</title>
+<meta name="description" content="Como a pesquisa binária e o logaritmo mostram que dobrar uma lista acrescenta só um passo, com figuras, código em Python e exemplos reais.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<style>
+.artigo { padding: 56px 0 72px; }
+.artigo h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); margin-bottom: 0.3em; }
+.artigo h2 { display: block; font-size: 1.5rem; margin-top: 2em; margin-bottom: 0.7em; padding-bottom: 0.3em; }
+.artigo .autor { color: var(--muted); font-size: 0.95rem; margin-bottom: 2em; }
+.artigo ul { padding-left: 1.2em; margin: 0 0 1.2em; }
+.artigo li { margin-bottom: 0.5em; }
+.formula { background: var(--paper-alt); border-left: 3px solid var(--accent); padding: 12px 18px; margin: 1.2em 0; font-family: var(--serif); font-size: 1.1rem; overflow-x: auto; }
+.voltar { display: inline-block; margin-bottom: 1.4em; font-size: 0.95rem; }
+.figura { margin: 1.8em 0 1.4em; }
+.figura svg { display: block; width: 100%; height: auto; font-family: var(--sans); }
+.figura figcaption { color: var(--muted); font-size: 0.9rem; margin-top: 0.6em; }
+.figura .t { fill: var(--ink); }
+.figura .q { fill: var(--muted); }
+.figura .tt { fill: var(--heading); font-weight: 600; }
+.figura .caixa { fill: none; stroke: var(--muted); stroke-width: 1.25; }
+.figura .destaque { fill: var(--accent); fill-opacity: 0.14; stroke: var(--accent); stroke-width: 2; }
+.figura .corte { fill: var(--accent); fill-opacity: 0.3; stroke: var(--accent); stroke-width: 1.25; }
+.figura .lig { fill: none; stroke: var(--muted); stroke-width: 1.25; }
+.figura .eixo { stroke: var(--muted); stroke-width: 1.25; fill: none; }
+.figura .grade { stroke: var(--line); stroke-width: 1; }
+.figura .tracejado { stroke-dasharray: 5 4; }
+.figura .barra { fill: var(--muted); fill-opacity: 0.45; }
+.figura .barra-top { fill: var(--accent); }
+.figura .ponto { fill: var(--accent); }
+.figura .vazio { fill: var(--paper); stroke: var(--muted); stroke-width: 1.5; }
+.figura .curva { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linejoin: round; }
+.figura .curva-m { fill: none; stroke: var(--muted); stroke-width: 2; stroke-linejoin: round; }
+.figura .serra { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; }
+.artigo pre { background: var(--paper-alt); border-left: 3px solid var(--accent); padding: 12px 16px; margin: 1.2em 0; overflow-x: auto; font-size: 0.9rem; line-height: 1.5; }
+.artigo pre code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.figura { --accent: #1f5fa8; --teal: #14968a; }
+:root[data-theme="dark"] .figura { --accent: #6aa7ec; --teal: #3fc4b4; }
+.figura .curva-m { stroke: var(--teal); }
+.figura .vazio { stroke: var(--teal); }
+.figura .destaque2 { fill: var(--teal); fill-opacity: 0.18; stroke: var(--teal); stroke-width: 2; }
+.figura .fonte { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+<div class="wrap header-inner">
+<a href="index.html" class="brand">Winston Andrade</a>
+<button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false">
+<span></span><span></span><span></span>
+</button>
+<nav class="site-nav" id="siteNav">
+<a href="index.html#sobre">Sobre</a>
+<a href="index.html#pesquisa">Pesquisa</a>
+<a href="index.html#ensino">Ensino</a>
+<a href="index.html#contato">Contato</a>
+<button class="theme-toggle" id="themeToggle" aria-label="Alternar tema claro/escuro" title="Alternar tema">
+<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2.5M12 19v2.5M4.5 12H2M22 12h-2.5M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg>
+<svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z"/></svg>
+</button>
+</nav>
+</div>
+</header>
+
+<main>
+<article class="artigo">
+<div class="wrap">
+
+<a class="voltar" href="index.html#pesquisa">&larr; Voltar ao site</a>
+
+<a class="voltar" href="index.html#pesquisa">&larr; Voltar ao site</a>
+
+<h1>Logaritmo na vida real: como achar uma agulha em um milhão de palheiros em 20 passos</h1>
+<p class="autor">Prof. Dr. Winston Aparecido Andrade</p>
+
+<p>Pense em uma lista telefônica com um milhão de nomes, em ordem alfabética. Para achar um nome, você não começa na primeira página e lê tudo. Você abre no meio, vê se o nome vem antes ou depois, e joga fora a metade que não serve. Repete isso poucas vezes e encontra. Essa intuição simples é um algoritmo famoso, a <strong>pesquisa binária</strong>, e a matemática que explica sua velocidade é o <strong>logaritmo</strong>.</p>
+
+<h2>O jogo da adivinhação</h2>
+<p>Pense em um número de 1 a 100. Eu tento adivinhar, e a cada palpite você só responde "muito alto", "muito baixo" ou "acertou". Há duas estratégias:</p>
+<ul>
+<li><strong>Pesquisa simples:</strong> chutar 1, depois 2, depois 3, e assim por diante. No pior caso, são 100 palpites.</li>
+<li><strong>Pesquisa binária:</strong> chutar sempre o número do meio da faixa que ainda resta. A cada resposta, metade das possibilidades desaparece.</li>
+</ul>
+<p>Veja como isso funciona quando o número escolhido é o 73:</p>
+
+<figure class="figura">
+<svg viewBox="0 0 760 310" role="img" aria-labelledby="a3f1t" font-size="13"><title id="a3f1t">Seis palpites encontram o número 73 entre 1 e 100, com a faixa de possibilidades caindo pela metade a cada palpite</title><text class="tt" x="24" y="28" text-anchor="start" font-size="15">Cada palpite descarta metade das possibilidades</text><text class="q" x="24" y="48" text-anchor="start" font-size="11.5">Procurando o número 73 entre 1 e 100: a faixa colorida mostra o que ainda resta</text><rect class="grade" x="150" y="70" width="540" height="20" fill="none" stroke="var(--line)"/><rect class="destaque" x="150.0" y="70" width="540.0" height="20" rx="3"/><line class="ponto" stroke="var(--accent)" stroke-width="3" x1="417.3" y1="66" x2="417.3" y2="94"/><text class="t" x="24" y="85" text-anchor="start" font-size="12.5">Palpite 1: 50</text><text class="q" x="142" y="85" text-anchor="end" font-size="11">1 a 100</text><text class="q" x="700" y="96" text-anchor="end" font-size="11"></text><text class="q" x="696" y="85" text-anchor="start" font-size="11"></text><text class="q" x="427.3" y="104" text-anchor="start" font-size="12"></text><text class="q" x="425.3" y="103" text-anchor="start" font-size="11">muito baixo</text><rect class="grade" x="150" y="108" width="540" height="20" fill="none" stroke="var(--line)"/><rect class="destaque" x="420.0" y="108" width="270.0" height="20" rx="3"/><line class="ponto" stroke="var(--accent)" stroke-width="3" x1="552.3" y1="104" x2="552.3" y2="132"/><text class="t" x="24" y="123" text-anchor="start" font-size="12.5">Palpite 2: 75</text><text class="q" x="142" y="123" text-anchor="end" font-size="11">51 a 100</text><text class="q" x="700" y="134" text-anchor="end" font-size="11"></text><text class="q" x="696" y="123" text-anchor="start" font-size="11"></text><text class="q" x="562.3" y="142" text-anchor="start" font-size="12"></text><text class="q" x="560.3" y="141" text-anchor="start" font-size="11">muito alto</text><rect class="grade" x="150" y="146" width="540" height="20" fill="none" stroke="var(--line)"/><rect class="destaque" x="420.0" y="146" width="129.6" height="20" rx="3"/><line class="ponto" stroke="var(--accent)" stroke-width="3" x1="482.1" y1="142" x2="482.1" y2="170"/><text class="t" x="24" y="161" text-anchor="start" font-size="12.5">Palpite 3: 62</text><text class="q" x="142" y="161" text-anchor="end" font-size="11">51 a 74</text><text class="q" x="700" y="172" text-anchor="end" font-size="11"></text><text class="q" x="696" y="161" text-anchor="start" font-size="11"></text><text class="q" x="492.1" y="180" text-anchor="start" font-size="12"></text><text class="q" x="490.1" y="179" text-anchor="start" font-size="11">muito baixo</text><rect class="grade" x="150" y="184" width="540" height="20" fill="none" stroke="var(--line)"/><rect class="destaque" x="484.8" y="184" width="64.8" height="20" rx="3"/><line class="ponto" stroke="var(--accent)" stroke-width="3" x1="514.5" y1="180" x2="514.5" y2="208"/><text class="t" x="24" y="199" text-anchor="start" font-size="12.5">Palpite 4: 68</text><text class="q" x="142" y="199" text-anchor="end" font-size="11">63 a 74</text><text class="q" x="700" y="210" text-anchor="end" font-size="11"></text><text class="q" x="696" y="199" text-anchor="start" font-size="11"></text><text class="q" x="524.5" y="218" text-anchor="start" font-size="12"></text><text class="q" x="522.5" y="217" text-anchor="start" font-size="11">muito baixo</text><rect class="grade" x="150" y="222" width="540" height="20" fill="none" stroke="var(--line)"/><rect class="destaque" x="517.2" y="222" width="32.4" height="20" rx="3"/><line class="ponto" stroke="var(--accent)" stroke-width="3" x1="530.7" y1="218" x2="530.7" y2="246"/><text class="t" x="24" y="237" text-anchor="start" font-size="12.5">Palpite 5: 71</text><text class="q" x="142" y="237" text-anchor="end" font-size="11">69 a 74</text><text class="q" x="700" y="248" text-anchor="end" font-size="11"></text><text class="q" x="696" y="237" text-anchor="start" font-size="11"></text><text class="q" x="540.7" y="256" text-anchor="start" font-size="12"></text><text class="q" x="538.7" y="255" text-anchor="start" font-size="11">muito baixo</text><rect class="grade" x="150" y="260" width="540" height="20" fill="none" stroke="var(--line)"/><rect class="destaque" x="533.4" y="260" width="16.2" height="20" rx="3"/><line class="ponto" stroke="var(--accent)" stroke-width="3" x1="541.5" y1="256" x2="541.5" y2="284"/><text class="t" x="24" y="275" text-anchor="start" font-size="12.5">Palpite 6: 73</text><text class="q" x="142" y="275" text-anchor="end" font-size="11">72 a 74</text><text class="q" x="700" y="286" text-anchor="end" font-size="11"></text><text class="q" x="696" y="275" text-anchor="start" font-size="11"></text><text class="q" x="551.5" y="294" text-anchor="start" font-size="12"></text><text class="tt" x="549.5" y="293" text-anchor="start" font-size="11">acertou!</text></svg>
+<figcaption>Em seis palpites o número 73 aparece. A faixa colorida é o que ainda pode conter a resposta: 100, 50, 24, 12, 6 e, por fim, 3 possibilidades.</figcaption>
+</figure>
+
+
+<p>Em vez de até 100 palpites, bastaram 6. Em nenhum momento foi preciso olhar número por número.</p>
+
+<h2>Onde entra o logaritmo</h2>
+<p>A pergunta que o logaritmo responde é: <strong>"a qual expoente devo elevar a base para chegar a este número?"</strong> Por exemplo, 2³ = 8, então log₂ 8 = 3.</p>
+<div class="formula">log₂ n = quantas vezes é preciso dividir n ao meio para chegar a 1</div>
+<p>Repare na ligação com o jogo: com 8 itens, os palpites cortam a lista assim: 8 → 4 → 2 → 1, ou seja, 3 cortes. Com 100 itens, o caminho é 100 → 50 → 25 → 13 → 7 → 4 → 2 → 1, e o pior caso é de 7 palpites, porque 2⁶ = 64 é menor que 100 e 2⁷ = 128 é maior. Em geral, a pesquisa binária precisa, no máximo, de cerca de log₂ n passos, enquanto a simples pode precisar de n.</p>
+
+<figure class="figura">
+<svg viewBox="0 0 760 320" role="img" aria-labelledby="a3f2t" font-size="13"><title id="a3f2t">Curvas do número de passos: a pesquisa simples cresce em linha reta e a binária quase não sobe, chegando a 6 passos para 64 itens</title><text class="tt" x="24" y="28" text-anchor="start" font-size="15">Passos no pior caso: pesquisa simples contra pesquisa binária</text><line class="grade" x1="90" y1="270.0" x2="700" y2="270.0"/><text class="q" x="80" y="274.0" text-anchor="end" font-size="11.5">0</text><line class="grade" x1="90" y1="215.0" x2="700" y2="215.0"/><text class="q" x="80" y="219.0" text-anchor="end" font-size="11.5">16</text><line class="grade" x1="90" y1="160.0" x2="700" y2="160.0"/><text class="q" x="80" y="164.0" text-anchor="end" font-size="11.5">32</text><line class="grade" x1="90" y1="105.0" x2="700" y2="105.0"/><text class="q" x="80" y="109.0" text-anchor="end" font-size="11.5">48</text><line class="grade" x1="90" y1="50.0" x2="700" y2="50.0"/><text class="q" x="80" y="54.0" text-anchor="end" font-size="11.5">64</text><line class="eixo" x1="90" y1="270" x2="700" y2="270"/><line class="eixo" x1="90.0" y1="270" x2="90.0" y2="276"/><text class="q" x="90.0" y="292" text-anchor="middle" font-size="11.5">0</text><line class="eixo" x1="242.5" y1="270" x2="242.5" y2="276"/><text class="q" x="242.5" y="292" text-anchor="middle" font-size="11.5">16</text><line class="eixo" x1="395.0" y1="270" x2="395.0" y2="276"/><text class="q" x="395.0" y="292" text-anchor="middle" font-size="11.5">32</text><line class="eixo" x1="547.5" y1="270" x2="547.5" y2="276"/><text class="q" x="547.5" y="292" text-anchor="middle" font-size="11.5">48</text><line class="eixo" x1="700.0" y1="270" x2="700.0" y2="276"/><text class="q" x="700.0" y="292" text-anchor="middle" font-size="11.5">64</text><polyline class="curva-m" stroke-dasharray="6 4" points="90.0,270.0 99.5,266.6 109.1,263.1 118.6,259.7 128.1,256.2 137.7,252.8 147.2,249.4 156.7,245.9 166.2,242.5 175.8,239.1 185.3,235.6 194.8,232.2 204.4,228.8 213.9,225.3 223.4,221.9 233.0,218.4 242.5,215.0 252.0,211.6 261.6,208.1 271.1,204.7 280.6,201.2 290.2,197.8 299.7,194.4 309.2,190.9 318.8,187.5 328.3,184.1 337.8,180.6 347.3,177.2 356.9,173.8 366.4,170.3 375.9,166.9 385.5,163.4 395.0,160.0 404.5,156.6 414.1,153.1 423.6,149.7 433.1,146.2 442.7,142.8 452.2,139.4 461.7,135.9 471.2,132.5 480.8,129.1 490.3,125.6 499.8,122.2 509.4,118.8 518.9,115.3 528.4,111.9 538.0,108.4 547.5,105.0 557.0,101.6 566.6,98.1 576.1,94.7 585.6,91.2 595.2,87.8 604.7,84.4 614.2,80.9 623.8,77.5 633.3,74.1 642.8,70.6 652.3,67.2 661.9,63.8 671.4,60.3 680.9,56.9 690.5,53.4 700.0,50.0"/><polyline class="curva" points="99.5,270.0 104.3,268.0 109.1,266.6 118.6,264.6 128.1,263.1 147.2,261.1 166.2,259.7 204.4,257.7 242.5,256.2 318.8,254.2 395.0,252.8 547.5,250.8 700.0,249.4"/><circle class="ponto" cx="700.0" cy="249.4" r="5"/><circle class="vazio" cx="700.0" cy="50.0" r="5"/><text class="q" x="688.0" y="42.0" text-anchor="end" font-size="12">64 passos</text><text class="tt" x="690.0" y="237.4" text-anchor="end" font-size="12.5">só 6 passos</text><text class="q" x="471.2" y="114.5" text-anchor="end" font-size="12">pesquisa simples: n</text><text class="tt" x="471.2" y="223.4" text-anchor="middle" font-size="12.5">pesquisa binária: log₂ n</text><text class="q" x="700" y="306" text-anchor="end" font-size="11.5">tamanho da lista n</text><text class="q" x="98" y="44" text-anchor="start" font-size="11.5">passos</text></svg>
+<figcaption>Para uma lista de 64 itens, a pesquisa simples pode levar 64 passos. A binária leva 6, porque 2⁶ = 64.</figcaption>
+</figure>
+
+
+<p>A linha tracejada é a pesquisa simples, que cresce sem parar. A linha contínua é a binária, que sobe muito devagar. É essa diferença de comportamento que o logaritmo descreve, e é por isso que na computação se diz que a pesquisa binária é de ordem <strong>O(log n)</strong>, enquanto a simples é <strong>O(n)</strong>.</p>
+
+<h2>O tamanho da lista quase não pesa</h2>
+<p>O resultado mais impressionante aparece quando a lista cresce muito:</p>
+
+<figure class="figura">
+<svg viewBox="0 0 760 300" role="img" aria-labelledby="a3f3t" font-size="13"><title id="a3f3t">Passos máximos da pesquisa binária: 7 para cem itens, 10 para mil, 20 para um milhão e 30 para um bilhão</title><text class="tt" x="24" y="28" text-anchor="start" font-size="15">Quantos passos a pesquisa binária precisa, no máximo</text><text class="q" x="24" y="48" text-anchor="start" font-size="11.5">Ao lado, o que a pesquisa simples poderia exigir para o mesmo tamanho de lista</text><text class="t" x="138" y="96" text-anchor="end" font-size="12.5">100 de itens</text><rect class="barra-top" x="150" y="74" width="70.0" height="30" rx="4"/><text class="tt" x="230.0" y="95" text-anchor="start" font-size="13">7 passos</text><text class="q" x="560" y="95" text-anchor="start" font-size="11.5">(simples: até 100)</text><text class="t" x="138" y="148" text-anchor="end" font-size="12.5">1.000 de itens</text><rect class="barra-top" x="150" y="126" width="100.0" height="30" rx="4"/><text class="tt" x="260.0" y="147" text-anchor="start" font-size="13">10 passos</text><text class="q" x="560" y="147" text-anchor="start" font-size="11.5">(simples: até 1.000)</text><text class="t" x="138" y="200" text-anchor="end" font-size="12.5">1 milhão de itens</text><rect class="barra-top" x="150" y="178" width="200.0" height="30" rx="4"/><text class="tt" x="360.0" y="199" text-anchor="start" font-size="13">20 passos</text><text class="q" x="560" y="199" text-anchor="start" font-size="11.5">(simples: até 1.000.000)</text><text class="t" x="138" y="252" text-anchor="end" font-size="12.5">1 bilhão de itens</text><rect class="barra-top" x="150" y="230" width="300.0" height="30" rx="4"/><text class="tt" x="460.0" y="251" text-anchor="start" font-size="13">30 passos</text><text class="q" x="560" y="251" text-anchor="start" font-size="11.5">(simples: até 1.000.000.000)</text><line class="eixo" x1="150" y1="66" x2="150" y2="268"/></svg>
+<figcaption>Cada vez que a lista fica mil vezes maior, a pesquisa binária precisa de apenas 10 passos a mais.</figcaption>
+</figure>
+
+
+<p>Com um milhão de itens, são 20 passos. Com um bilhão, 30. Dobrar o tamanho da lista acrescenta apenas <strong>um passo</strong>. Isso é o que significa crescimento logarítmico: a lista pode ficar enorme e o trabalho cresce quase nada.</p>
+
+<h2>O algoritmo em Python</h2>
+<p>A ideia cabe em poucas linhas. Duas variáveis marcam os limites da faixa que ainda resta, e a cada volta o programa testa o meio e descarta uma das metades:</p>
+<pre><code>def pesquisa_binaria(lista, item):
+    baixo, alto = 0, len(lista) - 1
+    while baixo &lt;= alto:
+        meio = (baixo + alto) // 2
+        chute = lista[meio]
+        if chute == item:
+            return meio          # achou
+        if chute &gt; item:
+            alto = meio - 1      # descarta a metade direita
+        else:
+            baixo = meio + 1     # descarta a metade esquerda
+    return None                  # não está na lista</code></pre>
+<p>Cada volta do laço corta a faixa pela metade, e é por isso que o número de voltas é da ordem de log₂ n.</p>
+
+<h2>Onde isso aparece no dia a dia</h2>
+<ul>
+<li><strong>Depuração de programas:</strong> se um defeito apareceu em algum ponto entre 1.000 versões do código, testar a versão do meio, depois a do meio da metade suspeita, e assim por diante, encontra a culpada em no máximo 10 testes. Ferramentas de controle de versão, como o Git, têm um comando que automatiza exatamente isso.</li>
+<li><strong>Bancos de dados:</strong> os índices que deixam uma consulta rápida, mesmo em tabelas enormes, se baseiam na mesma ideia de dividir o espaço de busca a cada passo.</li>
+<li><strong>Dicionários e agendas:</strong> quando você abre um dicionário perto da letra certa, está fazendo uma versão intuitiva do mesmo raciocínio.</li>
+</ul>
+
+<h2>Um cuidado importante</h2>
+<p>A pesquisa binária só funciona quando a lista está <strong>ordenada</strong>. Se estiver embaralhada, "ser maior ou menor que o palpite" não diz em qual metade procurar. Por isso, existe um custo de ordenar antes, e ele compensa quando fazemos muitas buscas na mesma lista.</p>
+
+<h2>Para fechar</h2>
+<p>O logaritmo costuma assustar quando aparece como fórmula, mas ele é só a contagem de quantas vezes dá para dividir ao meio. Quando alguém diz que um algoritmo é "logarítmico", quer dizer que ele continua rápido mesmo quando os dados crescem de forma absurda. A mesma busca pelo melhor ponto aparece no artigo sobre <a href="artigo-lote-economico.html">lote econômico de compras</a>, e a ideia de olhar como algo cresce está também em <a href="artigo-derivada-embalagem.html">derivada e o melhor tamanho de uma caixa</a>.</p>
+<p>Ficou com alguma dúvida ou quer ver outro exemplo? <a href="index.html#contato">Entre em contato pelo site</a>. Vai ser um prazer conversar.</p>
+
+</div>
+</article>
+</main>
+
+<footer class="site-footer">
+<div class="wrap">
+<p>&copy; <span id="year"></span> Winston Aparecido Andrade</p>
+</div>
+</footer>
+
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+var navToggle = document.getElementById("navToggle");
+var siteNav = document.getElementById("siteNav");
+navToggle.addEventListener("click", function () {
+  var isOpen = siteNav.classList.toggle("open");
+  navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+});
+var root = document.documentElement;
+(function () {
+  try {
+    var saved = localStorage.getItem("theme");
+    if (saved === "dark" || saved === "light") { root.setAttribute("data-theme", saved); return; }
+  } catch (e) {}
+  var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  root.setAttribute("data-theme", prefersDark ? "dark" : "light");
+})();
+document.getElementById("themeToggle").addEventListener("click", function () {
+  var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  root.setAttribute("data-theme", next);
+  try { localStorage.setItem("theme", next); } catch (e) {}
+});
+</script>
+</body>
+</html>

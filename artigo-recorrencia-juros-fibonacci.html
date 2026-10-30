@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recorrência na vida real: do cofrinho aos juros compostos e ao algoritmo que travou | Winston Aparecido Andrade</title>
+<meta name="description" content="Como as relações de recorrência descrevem juros, crescimento exponencial e o custo de algoritmos recursivos como o Fibonacci, com figuras e código.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<style>
+.artigo { padding: 56px 0 72px; }
+.artigo h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); margin-bottom: 0.3em; }
+.artigo h2 { display: block; font-size: 1.5rem; margin-top: 2em; margin-bottom: 0.7em; padding-bottom: 0.3em; }
+.artigo .autor { color: var(--muted); font-size: 0.95rem; margin-bottom: 2em; }
+.artigo ul { padding-left: 1.2em; margin: 0 0 1.2em; }
+.artigo li { margin-bottom: 0.5em; }
+.formula { background: var(--paper-alt); border-left: 3px solid var(--accent); padding: 12px 18px; margin: 1.2em 0; font-family: var(--serif); font-size: 1.1rem; overflow-x: auto; }
+.voltar { display: inline-block; margin-bottom: 1.4em; font-size: 0.95rem; }
+.figura { margin: 1.8em 0 1.4em; }
+.figura svg { display: block; width: 100%; height: auto; font-family: var(--sans); }
+.figura figcaption { color: var(--muted); font-size: 0.9rem; margin-top: 0.6em; }
+.figura .t { fill: var(--ink); }
+.figura .q { fill: var(--muted); }
+.figura .tt { fill: var(--heading); font-weight: 600; }
+.figura .caixa { fill: none; stroke: var(--muted); stroke-width: 1.25; }
+.figura .destaque { fill: var(--accent); fill-opacity: 0.14; stroke: var(--accent); stroke-width: 2; }
+.figura .corte { fill: var(--accent); fill-opacity: 0.3; stroke: var(--accent); stroke-width: 1.25; }
+.figura .lig { fill: none; stroke: var(--muted); stroke-width: 1.25; }
+.figura .eixo { stroke: var(--muted); stroke-width: 1.25; fill: none; }
+.figura .grade { stroke: var(--line); stroke-width: 1; }
+.figura .tracejado { stroke-dasharray: 5 4; }
+.figura .barra { fill: var(--muted); fill-opacity: 0.45; }
+.figura .barra-top { fill: var(--accent); }
+.figura .ponto { fill: var(--accent); }
+.figura .vazio { fill: var(--paper); stroke: var(--muted); stroke-width: 1.5; }
+.figura .curva { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linejoin: round; }
+.figura .curva-m { fill: none; stroke: var(--muted); stroke-width: 2; stroke-linejoin: round; }
+.figura .serra { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; }
+.artigo pre { background: var(--paper-alt); border-left: 3px solid var(--accent); padding: 12px 16px; margin: 1.2em 0; overflow-x: auto; font-size: 0.9rem; line-height: 1.5; }
+.artigo pre code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.figura { --accent: #1f5fa8; --teal: #14968a; }
+:root[data-theme="dark"] .figura { --accent: #6aa7ec; --teal: #3fc4b4; }
+.figura .curva-m { stroke: var(--teal); }
+.figura .vazio { stroke: var(--teal); }
+.figura .destaque2 { fill: var(--teal); fill-opacity: 0.18; stroke: var(--teal); stroke-width: 2; }
+.figura .fonte { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+<div class="wrap header-inner">
+<a href="index.html" class="brand">Winston Andrade</a>
+<button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false">
+<span></span><span></span><span></span>
+</button>
+<nav class="site-nav" id="siteNav">
+<a href="index.html#sobre">Sobre</a>
+<a href="index.html#pesquisa">Pesquisa</a>
+<a href="index.html#ensino">Ensino</a>
+<a href="index.html#contato">Contato</a>
+<button class="theme-toggle" id="themeToggle" aria-label="Alternar tema claro/escuro" title="Alternar tema">
+<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2.5M12 19v2.5M4.5 12H2M22 12h-2.5M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg>
+<svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z"/></svg>
+</button>
+</nav>
+</div>
+</header>
+
+<main>
+<article class="artigo">
+<div class="wrap">
+
+<a class="voltar" href="index.html#pesquisa">&larr; Voltar ao site</a>
+
+<a class="voltar" href="index.html#pesquisa">&larr; Voltar ao site</a>
+
+<h1>Recorrência na vida real: do cofrinho aos juros compostos e ao algoritmo que travou</h1>
+<p class="autor">Prof. Dr. Winston Aparecido Andrade</p>
+
+<p>Muita coisa no mundo cresce por uma regra simples: o que acontece hoje depende do que aconteceu ontem. O saldo da poupança, a população de bactérias, o número de chamadas de um programa recursivo. A matemática descreve esse tipo de situação com uma <strong>relação de recorrência</strong>, e entendê-la ajuda a decidir desde onde investir até qual algoritmo escolher.</p>
+
+<h2>A receita em duas partes</h2>
+<p>Uma relação de recorrência precisa de duas coisas:</p>
+<ul>
+<li><strong>Ponto de partida:</strong> o valor inicial, sem o qual a sequência não tem onde começar.</li>
+<li><strong>Regra de passagem:</strong> como calcular o próximo termo a partir dos anteriores.</li>
+</ul>
+<p>Pense em um menino que guarda, a cada dia, o dobro das figurinhas que tinha no dia anterior, começando com uma:</p>
+
+<figure class="figura">
+<svg viewBox="0 0 760 250" role="img" aria-labelledby="a4f1t" font-size="13"><title id="a4f1t">Cinco caixas mostrando 1, 2, 4, 8 e 16 figurinhas, cada uma o dobro da anterior</title><defs><marker id="a4seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs><text class="tt" x="24" y="28" text-anchor="start" font-size="15">Uma recorrência é uma receita: ponto de partida e regra de passagem</text><rect class="corte" x="40" y="80" width="80" height="60" rx="8"/><text class="tt" x="80" y="116" text-anchor="middle" font-size="22">1</text><text class="q" x="80" y="70" text-anchor="middle" font-size="12">dia 0</text><text class="q" x="80" y="162" text-anchor="middle" font-size="12">a₀ = 1</text><line class="lig" x1="124" y1="110" x2="176" y2="110" marker-end="url(#a4seta)"/><text class="t" x="150" y="98" text-anchor="middle" font-size="13">× 2</text><rect class="caixa" x="180" y="80" width="80" height="60" rx="8"/><text class="tt" x="220" y="116" text-anchor="middle" font-size="22">2</text><text class="q" x="220" y="70" text-anchor="middle" font-size="12">dia 1</text><text class="q" x="220" y="162" text-anchor="middle" font-size="12">a₁ = 2</text><line class="lig" x1="264" y1="110" x2="316" y2="110" marker-end="url(#a4seta)"/><text class="t" x="290" y="98" text-anchor="middle" font-size="13">× 2</text><rect class="caixa" x="320" y="80" width="80" height="60" rx="8"/><text class="tt" x="360" y="116" text-anchor="middle" font-size="22">4</text><text class="q" x="360" y="70" text-anchor="middle" font-size="12">dia 2</text><text class="q" x="360" y="162" text-anchor="middle" font-size="12">a₂ = 4</text><line class="lig" x1="404" y1="110" x2="456" y2="110" marker-end="url(#a4seta)"/><text class="t" x="430" y="98" text-anchor="middle" font-size="13">× 2</text><rect class="caixa" x="460" y="80" width="80" height="60" rx="8"/><text class="tt" x="500" y="116" text-anchor="middle" font-size="22">8</text><text class="q" x="500" y="70" text-anchor="middle" font-size="12">dia 3</text><text class="q" x="500" y="162" text-anchor="middle" font-size="12">a₃ = 8</text><line class="lig" x1="544" y1="110" x2="596" y2="110" marker-end="url(#a4seta)"/><text class="t" x="570" y="98" text-anchor="middle" font-size="13">× 2</text><rect class="caixa" x="600" y="80" width="80" height="60" rx="8"/><text class="tt" x="640" y="116" text-anchor="middle" font-size="22">16</text><text class="q" x="640" y="70" text-anchor="middle" font-size="12">dia 4</text><text class="q" x="640" y="162" text-anchor="middle" font-size="12">a₄ = 16</text><text class="t" x="40" y="205" text-anchor="start" font-size="13">Ponto de partida: a₀ = 1</text><text class="t" x="40" y="228" text-anchor="start" font-size="13">Regra: aₙ = 2 · aₙ₋₁ (cada dia é o dobro do dia anterior)</text></svg>
+<figcaption>As figurinhas do Joãozinho: o dia seguinte sempre vale o dobro do dia anterior.</figcaption>
+</figure>
+
+
+<p>Em notação: <strong>a₀ = 1</strong> e <strong>aₙ = 2 · aₙ₋₁</strong>. Com essas duas linhas, qualquer dia da sequência pode ser calculado, passo a passo.</p>
+
+<h2>Somar ou multiplicar: a diferença que muda tudo</h2>
+<p>Há dois jeitos básicos de uma sequência crescer, e a diferença entre eles é enorme:</p>
+<ul>
+<li><strong>Somar sempre o mesmo valor:</strong> um cofrinho com R$ 10 que ganha R$ 5 por dia segue a₀ = 10 e aₙ = aₙ₋₁ + 5. Em 4 dias, são R$ 30. O crescimento é em linha reta.</li>
+<li><strong>Multiplicar sempre pelo mesmo fator:</strong> uma cultura que triplica a cada hora, começando com 3 bactérias, segue a₀ = 3 e aₙ = 3 · aₙ₋₁. Em 3 horas, são 81. O crescimento é <strong>exponencial</strong>.</li>
+</ul>
+<p>Os juros mostram bem essa diferença. Imagine R$ 1.000 aplicados a 1% ao mês. Nos <strong>juros simples</strong>, o rendimento é sempre calculado sobre o valor inicial, e o saldo soma R$ 10 por mês. Nos <strong>juros compostos</strong>, cada mês rende sobre o saldo do mês anterior:</p>
+<div class="formula">aₙ = 1,01 · aₙ₋₁, com a₀ = 1.000 &nbsp;⟹&nbsp; aₙ = 1.000 · 1,01ⁿ</div>
+
+<figure class="figura">
+<svg viewBox="0 0 760 320" role="img" aria-labelledby="a4f2t" font-size="13"><title id="a4f2t">Dois gráficos de saldo ao longo de dez anos: juros simples chegam a R$ 2.200 e juros compostos a R$ 3.300</title><text class="tt" x="24" y="28" text-anchor="start" font-size="15">R$ 1.000 a 1% ao mês: juros simples e juros compostos</text><line class="grade" x1="90" y1="207.1" x2="700" y2="207.1"/><text class="q" x="80" y="211.1" text-anchor="end" font-size="11.5">1.000</text><line class="grade" x1="90" y1="144.3" x2="700" y2="144.3"/><text class="q" x="80" y="148.3" text-anchor="end" font-size="11.5">2.000</text><line class="grade" x1="90" y1="81.4" x2="700" y2="81.4"/><text class="q" x="80" y="85.4" text-anchor="end" font-size="11.5">3.000</text><text class="q" x="80" y="274" text-anchor="end" font-size="11.5">0</text><line class="eixo" x1="90" y1="270" x2="700" y2="270"/><line class="eixo" x1="90.0" y1="270" x2="90.0" y2="276"/><text class="q" x="90.0" y="292" text-anchor="middle" font-size="11.5">0</text><line class="eixo" x1="212.0" y1="270" x2="212.0" y2="276"/><text class="q" x="212.0" y="292" text-anchor="middle" font-size="11.5">2 anos</text><line class="eixo" x1="334.0" y1="270" x2="334.0" y2="276"/><text class="q" x="334.0" y="292" text-anchor="middle" font-size="11.5">4 anos</text><line class="eixo" x1="456.0" y1="270" x2="456.0" y2="276"/><text class="q" x="456.0" y="292" text-anchor="middle" font-size="11.5">6 anos</text><line class="eixo" x1="578.0" y1="270" x2="578.0" y2="276"/><text class="q" x="578.0" y="292" text-anchor="middle" font-size="11.5">8 anos</text><line class="eixo" x1="700.0" y1="270" x2="700.0" y2="276"/><text class="q" x="700.0" y="292" text-anchor="middle" font-size="11.5">10 anos</text><polyline class="curva-m" stroke-dasharray="6 4" points="90.0,207.1 120.5,203.4 151.0,199.6 181.5,195.8 212.0,192.1 242.5,188.3 273.0,184.5 303.5,180.7 334.0,177.0 364.5,173.2 395.0,169.4 425.5,165.7 456.0,161.9 486.5,158.1 517.0,154.3 547.5,150.6 578.0,146.8 608.5,143.0 639.0,139.3 669.5,135.5 700.0,131.7"/><polyline class="curva" points="90.0,207.1 120.5,203.3 151.0,199.2 181.5,194.8 212.0,190.2 242.5,185.3 273.0,180.1 303.5,174.5 334.0,168.7 364.5,162.4 395.0,155.8 425.5,148.8 456.0,141.3 486.5,133.4 517.0,125.0 547.5,116.1 578.0,106.6 608.5,96.6 639.0,85.9 669.5,74.6 700.0,62.5"/><circle class="ponto" cx="700.0" cy="62.5" r="5"/><circle class="vazio" cx="700.0" cy="131.7" r="5"/><text class="tt" x="690.0" y="52.5" text-anchor="end" font-size="12.5">compostos: R$ 3.300</text><text class="q" x="690.0" y="177.7" text-anchor="end" font-size="12">simples: R$ 2.200</text><text class="q" x="293.3" y="218.0" text-anchor="middle" font-size="11.5">simples: soma R$ 10 por mês</text><text class="tt" x="384.8" y="124.1" text-anchor="middle" font-size="11.5">compostos: multiplica por 1,01</text><text class="q" x="98" y="44" text-anchor="start" font-size="11.5">saldo (R$)</text><text class="q" x="700" y="316" text-anchor="end" font-size="11.5">tempo</text></svg>
+<figcaption>Os dois começam iguais. Com o tempo, a regra de multiplicar abre uma diferença de mais de R$ 1.000.</figcaption>
+</figure>
+
+
+<ul>
+<li>Em 1 ano: R$ 1.120 nos juros simples e cerca de R$ 1.127 nos compostos. Quase não há diferença.</li>
+<li>Em 5 anos: R$ 1.600 contra cerca de R$ 1.817.</li>
+<li>Em 10 anos: R$ 2.200 contra cerca de R$ 3.300. O saldo composto é 50% maior.</li>
+</ul>
+<p>É por isso que o tempo é tão valioso em qualquer aplicação financeira, e também por que uma dívida com juros compostos, como a do cartão de crédito, cresce tão depressa quando não é paga.</p>
+
+<h2>Recorrência dentro dos algoritmos</h2>
+<p>Em computação, a mesma ideia serve para medir o custo de um programa recursivo, isto é, de uma função que chama a si mesma. O custo T(n) é escrito em função do custo de entradas menores:</p>
+<ul>
+<li><strong>Fatorial:</strong> T(n) = T(n − 1) + 1. Cada chamada faz uma conta e passa o resto adiante. O custo cresce em linha reta, <strong>O(n)</strong>.</li>
+<li><strong>Pesquisa binária:</strong> T(n) = T(n/2) + 1. Cada passo corta o problema pela metade. O custo é <strong>O(log n)</strong>, como mostramos no artigo sobre <a href="artigo-logaritmo-pesquisa-binaria.html">logaritmo e pesquisa binária</a>.</li>
+<li><strong>Merge Sort:</strong> T(n) = 2T(n/2) + n. O problema é dividido em duas metades, e juntar os resultados custa n. O custo é <strong>O(n log n)</strong>.</li>
+<li><strong>Fibonacci recursivo:</strong> T(n) = T(n − 1) + T(n − 2) + 1. Aqui mora o problema.</li>
+</ul>
+
+<h2>O algoritmo que travou</h2>
+<p>A sequência de Fibonacci (0, 1, 1, 2, 3, 5, 8, 13, ...) é definida por uma recorrência: cada termo é a soma dos dois anteriores. Escrever o programa seguindo a definição ao pé da letra parece natural, mas cada chamada gera <strong>duas</strong> novas chamadas, e muitas delas repetem contas já feitas:</p>
+
+<figure class="figura">
+<svg viewBox="0 0 760 300" role="img" aria-labelledby="a4f3t" font-size="13"><title id="a4f3t">Árvore de chamadas de fib(5) com 15 nós, mostrando fib(3) calculado duas vezes e fib(2) três vezes</title><text class="tt" x="24" y="28" text-anchor="start" font-size="15">Fibonacci recursivo: as mesmas contas repetidas muitas vezes</text><line class="lig" x1="91.0" y1="238" x2="60" y2="266"/><line class="lig" x1="91.0" y1="238" x2="122" y2="266"/><line class="lig" x1="137.5" y1="186" x2="91.0" y2="214"/><line class="lig" x1="137.5" y1="186" x2="184" y2="214"/><line class="lig" x1="277.0" y1="186" x2="246" y2="214"/><line class="lig" x1="277.0" y1="186" x2="308" y2="214"/><line class="lig" x1="207.25" y1="134" x2="137.5" y2="162"/><line class="lig" x1="207.25" y1="134" x2="277.0" y2="162"/><line class="lig" x1="401.0" y1="186" x2="370" y2="214"/><line class="lig" x1="401.0" y1="186" x2="432" y2="214"/><line class="lig" x1="447.5" y1="134" x2="401.0" y2="162"/><line class="lig" x1="447.5" y1="134" x2="494" y2="162"/><line class="lig" x1="327.375" y1="82" x2="207.25" y2="110"/><line class="lig" x1="327.375" y1="82" x2="447.5" y2="110"/><rect class="caixa" x="34" y="266" width="52" height="24" rx="6"/><text class="t" x="60" y="282" text-anchor="middle" font-size="11.5">fib(1)</text><rect class="caixa" x="96" y="266" width="52" height="24" rx="6"/><text class="t" x="122" y="282" text-anchor="middle" font-size="11.5">fib(0)</text><rect class="destaque2" x="65.0" y="214" width="52" height="24" rx="6"/><text class="t" x="91.0" y="230" text-anchor="middle" font-size="11.5">fib(2)</text><rect class="caixa" x="158" y="214" width="52" height="24" rx="6"/><text class="t" x="184" y="230" text-anchor="middle" font-size="11.5">fib(1)</text><rect class="corte" x="111.5" y="162" width="52" height="24" rx="6"/><text class="t" x="137.5" y="178" text-anchor="middle" font-size="11.5">fib(3)</text><rect class="caixa" x="220" y="214" width="52" height="24" rx="6"/><text class="t" x="246" y="230" text-anchor="middle" font-size="11.5">fib(1)</text><rect class="caixa" x="282" y="214" width="52" height="24" rx="6"/><text class="t" x="308" y="230" text-anchor="middle" font-size="11.5">fib(0)</text><rect class="destaque2" x="251.0" y="162" width="52" height="24" rx="6"/><text class="t" x="277.0" y="178" text-anchor="middle" font-size="11.5">fib(2)</text><rect class="caixa" x="181.25" y="110" width="52" height="24" rx="6"/><text class="t" x="207.25" y="126" text-anchor="middle" font-size="11.5">fib(4)</text><rect class="caixa" x="344" y="214" width="52" height="24" rx="6"/><text class="t" x="370" y="230" text-anchor="middle" font-size="11.5">fib(1)</text><rect class="caixa" x="406" y="214" width="52" height="24" rx="6"/><text class="t" x="432" y="230" text-anchor="middle" font-size="11.5">fib(0)</text><rect class="destaque2" x="375.0" y="162" width="52" height="24" rx="6"/><text class="t" x="401.0" y="178" text-anchor="middle" font-size="11.5">fib(2)</text><rect class="caixa" x="468" y="162" width="52" height="24" rx="6"/><text class="t" x="494" y="178" text-anchor="middle" font-size="11.5">fib(1)</text><rect class="corte" x="421.5" y="110" width="52" height="24" rx="6"/><text class="t" x="447.5" y="126" text-anchor="middle" font-size="11.5">fib(3)</text><rect class="caixa" x="301.375" y="58" width="52" height="24" rx="6"/><text class="t" x="327.375" y="74" text-anchor="middle" font-size="11.5">fib(5)</text><rect class="corte" x="585" y="86" width="22" height="16" rx="4"/><text class="t" x="615" y="99" text-anchor="start" font-size="12">fib(3): calculado 2 vezes</text><rect class="destaque2" x="585" y="114" width="22" height="16" rx="4"/><text class="t" x="615" y="127" text-anchor="start" font-size="12">fib(2): calculado 3 vezes</text><text class="tt" x="585" y="166" text-anchor="start" font-size="12.5">Só para fib(5)</text><text class="tt" x="585" y="184" text-anchor="start" font-size="12.5">são 15 chamadas.</text></svg>
+<figcaption>Cada chamada de fib(n) gera duas novas chamadas, e os mesmos valores são recalculados várias vezes.</figcaption>
+</figure>
+
+
+<p>Com n pequeno, ninguém percebe. Mas o número de chamadas cresce de forma exponencial:</p>
+<ul>
+<li>fib(10): 177 chamadas.</li>
+<li>fib(20): 21.891 chamadas.</li>
+<li>fib(30): 2.692.537 chamadas.</li>
+<li>fib(40): mais de 331 milhões de chamadas.</li>
+</ul>
+<p>Cada vez que n aumenta em 1, o trabalho é multiplicado por cerca de 1,6. É a mesma lógica dos juros compostos, só que agora o crescimento exponencial trabalha <strong>contra</strong> nós. A solução é guardar apenas os dois últimos valores e calcular com um simples laço, em n passos:</p>
+<pre><code>def fib(n):                      # recursivo ingênuo
+    if n &lt;= 1:
+        return n
+    return fib(n - 1) + fib(n - 2)
+
+def fib_rapido(n):               # guarda só os dois últimos valores
+    a, b = 0, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a</code></pre>
+<p>Os dois programas calculam exatamente a mesma sequência, mas um deles termina em um instante e o outro pode levar dezenas de segundos para n = 40. A recorrência é a ferramenta que permite enxergar essa diferença antes de rodar o código.</p>
+
+<h2>Para fechar</h2>
+<p>Relações de recorrência aparecem sempre que o passo seguinte depende do anterior: no dinheiro, na biologia, nos algoritmos. Saber se a regra soma ou multiplica, e se o problema é cortado pela metade ou duplicado, diz se o resultado será confortável ou explosivo. Outro exemplo de matemática que decide está no artigo sobre <a href="artigo-lote-economico.html">lote econômico de compras</a>.</p>
+<p>Ficou com alguma dúvida ou quer ver outro exemplo? <a href="index.html#contato">Entre em contato pelo site</a>. Vai ser um prazer conversar.</p>
+
+</div>
+</article>
+</main>
+
+<footer class="site-footer">
+<div class="wrap">
+<p>&copy; <span id="year"></span> Winston Aparecido Andrade</p>
+</div>
+</footer>
+
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+var navToggle = document.getElementById("navToggle");
+var siteNav = document.getElementById("siteNav");
+navToggle.addEventListener("click", function () {
+  var isOpen = siteNav.classList.toggle("open");
+  navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+});
+var root = document.documentElement;
+(function () {
+  try {
+    var saved = localStorage.getItem("theme");
+    if (saved === "dark" || saved === "light") { root.setAttribute("data-theme", saved); return; }
+  } catch (e) {}
+  var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  root.setAttribute("data-theme", prefersDark ? "dark" : "light");
+})();
+document.getElementById("themeToggle").addEventListener("click", function () {
+  var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  root.setAttribute("data-theme", next);
+  try { localStorage.setItem("theme", next); } catch (e) {}
+});
+</script>
+</body>
+</html>

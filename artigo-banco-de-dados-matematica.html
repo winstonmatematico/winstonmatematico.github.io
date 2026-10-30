@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seu banco de dados é matemática: relações, funções e o SQL por trás das consultas | Winston Aparecido Andrade</title>
+<meta name="description" content="Como tabelas, chaves primárias e consultas SQL vêm da teoria dos conjuntos, das relações e das funções, com exemplo acadêmico e figuras.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<style>
+.artigo { padding: 56px 0 72px; }
+.artigo h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); margin-bottom: 0.3em; }
+.artigo h2 { display: block; font-size: 1.5rem; margin-top: 2em; margin-bottom: 0.7em; padding-bottom: 0.3em; }
+.artigo .autor { color: var(--muted); font-size: 0.95rem; margin-bottom: 2em; }
+.artigo ul { padding-left: 1.2em; margin: 0 0 1.2em; }
+.artigo li { margin-bottom: 0.5em; }
+.formula { background: var(--paper-alt); border-left: 3px solid var(--accent); padding: 12px 18px; margin: 1.2em 0; font-family: var(--serif); font-size: 1.1rem; overflow-x: auto; }
+.voltar { display: inline-block; margin-bottom: 1.4em; font-size: 0.95rem; }
+.figura { margin: 1.8em 0 1.4em; }
+.figura svg { display: block; width: 100%; height: auto; font-family: var(--sans); }
+.figura figcaption { color: var(--muted); font-size: 0.9rem; margin-top: 0.6em; }
+.figura .t { fill: var(--ink); }
+.figura .q { fill: var(--muted); }
+.figura .tt { fill: var(--heading); font-weight: 600; }
+.figura .caixa { fill: none; stroke: var(--muted); stroke-width: 1.25; }
+.figura .destaque { fill: var(--accent); fill-opacity: 0.14; stroke: var(--accent); stroke-width: 2; }
+.figura .corte { fill: var(--accent); fill-opacity: 0.3; stroke: var(--accent); stroke-width: 1.25; }
+.figura .lig { fill: none; stroke: var(--muted); stroke-width: 1.25; }
+.figura .eixo { stroke: var(--muted); stroke-width: 1.25; fill: none; }
+.figura .grade { stroke: var(--line); stroke-width: 1; }
+.figura .tracejado { stroke-dasharray: 5 4; }
+.figura .barra { fill: var(--muted); fill-opacity: 0.45; }
+.figura .barra-top { fill: var(--accent); }
+.figura .ponto { fill: var(--accent); }
+.figura .vazio { fill: var(--paper); stroke: var(--muted); stroke-width: 1.5; }
+.figura .curva { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linejoin: round; }
+.figura .curva-m { fill: none; stroke: var(--muted); stroke-width: 2; stroke-linejoin: round; }
+.figura .serra { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; }
+.artigo pre { background: var(--paper-alt); border-left: 3px solid var(--accent); padding: 12px 16px; margin: 1.2em 0; overflow-x: auto; font-size: 0.9rem; line-height: 1.5; }
+.artigo pre code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.figura { --accent: #1f5fa8; --teal: #14968a; }
+:root[data-theme="dark"] .figura { --accent: #6aa7ec; --teal: #3fc4b4; }
+.figura .curva-m { stroke: var(--teal); }
+.figura .vazio { stroke: var(--teal); }
+.figura .destaque2 { fill: var(--teal); fill-opacity: 0.18; stroke: var(--teal); stroke-width: 2; }
+.figura .fonte { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+<div class="wrap header-inner">
+<a href="index.html" class="brand">Winston Andrade</a>
+<button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false">
+<span></span><span></span><span></span>
+</button>
+<nav class="site-nav" id="siteNav">
+<a href="index.html#sobre">Sobre</a>
+<a href="index.html#pesquisa">Pesquisa</a>
+<a href="index.html#ensino">Ensino</a>
+<a href="index.html#contato">Contato</a>
+<button class="theme-toggle" id="themeToggle" aria-label="Alternar tema claro/escuro" title="Alternar tema">
+<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2.5M12 19v2.5M4.5 12H2M22 12h-2.5M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg>
+<svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z"/></svg>
+</button>
+</nav>
+</div>
+</header>
+
+<main>
+<article class="artigo">
+<div class="wrap">
+
+<a class="voltar" href="index.html#pesquisa">&larr; Voltar ao site</a>
+
+<a class="voltar" href="index.html#pesquisa">&larr; Voltar ao site</a>
+
+<h1>Seu banco de dados é matemática: relações, funções e o SQL por trás das consultas</h1>
+<p class="autor">Prof. Dr. Winston Aparecido Andrade</p>
+
+<p>Quando você digita uma consulta em um banco de dados, parece que está conversando com um programa. Na verdade, está usando <strong>teoria dos conjuntos</strong>. Uma tabela é uma relação matemática, uma consulta é uma composição de operações sobre conjuntos, e o SQL é a tradução dessa matemática para um comando que o computador entende. Entender essa base ajuda a escrever consultas melhores e a modelar dados com mais segurança.</p>
+
+<h2>O exemplo que vamos usar</h2>
+<p>Um pequeno banco acadêmico, com três tabelas:</p>
+<ul>
+<li><strong>ALUNO(ra, nome, curso, semestre):</strong> (101, Ana, DSM, 2), (102, Bruno, DSM, 1), (103, Carla, LOG, 2), (104, Diego, DSM, 2).</li>
+<li><strong>DISCIPLINA(cod, titulo):</strong> (MAT019, Matemática para Computação), (PRG001, Programação).</li>
+<li><strong>MATRICULA(ra, cod, nota):</strong> (101, MAT019, 8,5), (102, MAT019, 6,0), (104, MAT019, 4,5), (101, PRG001, 9,0), (103, PRG001, 7,0).</li>
+</ul>
+
+<h2>Uma tabela é uma relação</h2>
+<p>Dados dois conjuntos A e B, o <strong>produto cartesiano</strong> A × B reúne todos os pares ordenados possíveis, e uma <strong>relação</strong> é qualquer subconjunto desse produto. Se A tem m elementos e B tem n, o produto tem m · n pares.</p>
+<p>No nosso banco, são 4 alunos e 2 disciplinas, então há 8 pares possíveis. A tabela MATRICULA escolhe 5 deles:</p>
+
+<figure class="figura">
+<svg viewBox="0 0 760 310" role="img" aria-labelledby="a5f1t" font-size="13"><title id="a5f1t">Grade de 4 alunos por 2 disciplinas com 5 pares destacados, que formam a relação MATRICULA</title><text class="tt" x="24" y="28" text-anchor="start" font-size="15">Uma tabela é um subconjunto de um produto cartesiano</text><text class="q" x="24" y="48" text-anchor="start" font-size="11.5">RA × COD tem 4 × 2 = 8 pares possíveis. A relação MATRICULA escolhe 5 deles.</text><text class="tt" x="215.0" y="98" text-anchor="middle" font-size="13">MAT019</text><text class="tt" x="345.0" y="98" text-anchor="middle" font-size="13">PRG001</text><text class="t" x="136" y="137.0" text-anchor="end" font-size="13">RA 101</text><rect class="corte" x="154" y="114" width="122" height="36" rx="6"/><text class="t" x="215.0" y="137.0" text-anchor="middle" font-size="11.5">(101, MAT019)</text><rect class="corte" x="284" y="114" width="122" height="36" rx="6"/><text class="t" x="345.0" y="137.0" text-anchor="middle" font-size="11.5">(101, PRG001)</text><text class="t" x="136" y="181.0" text-anchor="end" font-size="13">RA 102</text><rect class="corte" x="154" y="158" width="122" height="36" rx="6"/><text class="t" x="215.0" y="181.0" text-anchor="middle" font-size="11.5">(102, MAT019)</text><rect class="caixa" x="284" y="158" width="122" height="36" rx="6"/><text class="q" x="345.0" y="181.0" text-anchor="middle" font-size="10.5">não matriculado</text><text class="t" x="136" y="225.0" text-anchor="end" font-size="13">RA 103</text><rect class="caixa" x="154" y="202" width="122" height="36" rx="6"/><text class="q" x="215.0" y="225.0" text-anchor="middle" font-size="10.5">não matriculado</text><rect class="corte" x="284" y="202" width="122" height="36" rx="6"/><text class="t" x="345.0" y="225.0" text-anchor="middle" font-size="11.5">(103, PRG001)</text><text class="t" x="136" y="269.0" text-anchor="end" font-size="13">RA 104</text><rect class="corte" x="154" y="246" width="122" height="36" rx="6"/><text class="t" x="215.0" y="269.0" text-anchor="middle" font-size="11.5">(104, MAT019)</text><rect class="caixa" x="284" y="246" width="122" height="36" rx="6"/><text class="q" x="345.0" y="269.0" text-anchor="middle" font-size="10.5">não matriculado</text><rect class="corte" x="470" y="120" width="22" height="16" rx="4"/><text class="t" x="500" y="133" text-anchor="start" font-size="12">par escolhido: faz parte da relação</text><rect class="caixa" x="470" y="150" width="22" height="16" rx="4"/><text class="t" x="500" y="163" text-anchor="start" font-size="12">par possível, mas fora da relação</text><text class="tt" x="470" y="206" text-anchor="start" font-size="13">MATRICULA ⊆ RA × COD</text></svg>
+<figcaption>Cada linha da tabela MATRICULA é um par (aluno, disciplina) dentre todas as combinações possíveis.</figcaption>
+</figure>
+
+
+<p>Isso explica três características das tabelas: uma linha é uma <strong>tupla</strong> (um elemento da relação), a tabela não tem linhas repetidas porque conjuntos não repetem elementos, e a ordem das linhas não importa.</p>
+
+<h2>Chave primária e função</h2>
+<p>Repare que ligar o RA ao nome do aluno é uma <strong>função</strong>: cada RA tem um único nome. Mas o caminho inverso não é: dois alunos diferentes podem se chamar Ana Souza. Por isso o nome não serve para identificar um aluno, e o RA serve. Em linguagem matemática, o RA é <strong>injetor</strong>: dois alunos diferentes nunca têm o mesmo RA. É exatamente isso que se exige de uma <strong>chave primária</strong>.</p>
+<p>Na tabela MATRICULA, nenhum atributo sozinho identifica uma linha, porque o mesmo RA aparece em várias matrículas. A chave é o par (ra, cod), que é único para cada tupla.</p>
+
+<h2>Escolhendo linhas e colunas</h2>
+<p>As duas operações mais básicas são a <strong>seleção</strong> (σ), que escolhe linhas segundo uma condição, e a <strong>projeção</strong> (π), que escolhe colunas:</p>
+
+<figure class="figura">
+<svg viewBox="0 0 760 280" role="img" aria-labelledby="a5f2t" font-size="13"><title id="a5f2t">Duas tabelas ALUNO: na primeira, duas linhas destacadas pela seleção; na segunda, a coluna curso destacada pela projeção</title><text class="tt" x="24" y="28" text-anchor="start" font-size="15">Seleção escolhe linhas, projeção escolhe colunas</text><text class="tt" x="24" y="64" text-anchor="start" font-size="13">σ curso = DSM e semestre = 2 (ALUNO)</text><rect class="caixa" x="24" y="78" width="44" height="26"/><text class="tt" x="46.0" y="95" text-anchor="middle" font-size="12">ra</text><rect class="caixa" x="68" y="78" width="64" height="26"/><text class="tt" x="100.0" y="95" text-anchor="middle" font-size="12">nome</text><rect class="caixa" x="132" y="78" width="58" height="26"/><text class="tt" x="161.0" y="95" text-anchor="middle" font-size="12">curso</text><rect class="caixa" x="190" y="78" width="70" height="26"/><text class="tt" x="225.0" y="95" text-anchor="middle" font-size="12">semestre</text><rect class="destaque" x="24" y="104" width="44" height="26"/><text class="t" x="46.0" y="121" text-anchor="middle" font-size="12">101</text><rect class="destaque" x="68" y="104" width="64" height="26"/><text class="t" x="100.0" y="121" text-anchor="middle" font-size="12">Ana</text><rect class="destaque" x="132" y="104" width="58" height="26"/><text class="t" x="161.0" y="121" text-anchor="middle" font-size="12">DSM</text><rect class="destaque" x="190" y="104" width="70" height="26"/><text class="t" x="225.0" y="121" text-anchor="middle" font-size="12">2</text><rect class="caixa" x="24" y="130" width="44" height="26"/><text class="t" x="46.0" y="147" text-anchor="middle" font-size="12">102</text><rect class="caixa" x="68" y="130" width="64" height="26"/><text class="t" x="100.0" y="147" text-anchor="middle" font-size="12">Bruno</text><rect class="caixa" x="132" y="130" width="58" height="26"/><text class="t" x="161.0" y="147" text-anchor="middle" font-size="12">DSM</text><rect class="caixa" x="190" y="130" width="70" height="26"/><text class="t" x="225.0" y="147" text-anchor="middle" font-size="12">1</text><rect class="caixa" x="24" y="156" width="44" height="26"/><text class="t" x="46.0" y="173" text-anchor="middle" font-size="12">103</text><rect class="caixa" x="68" y="156" width="64" height="26"/><text class="t" x="100.0" y="173" text-anchor="middle" font-size="12">Carla</text><rect class="caixa" x="132" y="156" width="58" height="26"/><text class="t" x="161.0" y="173" text-anchor="middle" font-size="12">LOG</text><rect class="caixa" x="190" y="156" width="70" height="26"/><text class="t" x="225.0" y="173" text-anchor="middle" font-size="12">2</text><rect class="destaque" x="24" y="182" width="44" height="26"/><text class="t" x="46.0" y="199" text-anchor="middle" font-size="12">104</text><rect class="destaque" x="68" y="182" width="64" height="26"/><text class="t" x="100.0" y="199" text-anchor="middle" font-size="12">Diego</text><rect class="destaque" x="132" y="182" width="58" height="26"/><text class="t" x="161.0" y="199" text-anchor="middle" font-size="12">DSM</text><rect class="destaque" x="190" y="182" width="70" height="26"/><text class="t" x="225.0" y="199" text-anchor="middle" font-size="12">2</text><text class="t" x="24" y="236" text-anchor="start" font-size="12.5">Resultado: Ana (101) e Diego (104)</text><text class="tt" x="410" y="64" text-anchor="start" font-size="13">π curso (ALUNO)</text><rect class="caixa" x="410" y="78" width="44" height="26"/><text class="tt" x="432.0" y="95" text-anchor="middle" font-size="12">ra</text><rect class="caixa" x="454" y="78" width="64" height="26"/><text class="tt" x="486.0" y="95" text-anchor="middle" font-size="12">nome</text><rect class="corte" x="518" y="78" width="58" height="26"/><text class="tt" x="547.0" y="95" text-anchor="middle" font-size="12">curso</text><rect class="caixa" x="576" y="78" width="70" height="26"/><text class="tt" x="611.0" y="95" text-anchor="middle" font-size="12">semestre</text><rect class="caixa" x="410" y="104" width="44" height="26"/><text class="t" x="432.0" y="121" text-anchor="middle" font-size="12">101</text><rect class="caixa" x="454" y="104" width="64" height="26"/><text class="t" x="486.0" y="121" text-anchor="middle" font-size="12">Ana</text><rect class="destaque" x="518" y="104" width="58" height="26"/><text class="t" x="547.0" y="121" text-anchor="middle" font-size="12">DSM</text><rect class="caixa" x="576" y="104" width="70" height="26"/><text class="t" x="611.0" y="121" text-anchor="middle" font-size="12">2</text><rect class="caixa" x="410" y="130" width="44" height="26"/><text class="t" x="432.0" y="147" text-anchor="middle" font-size="12">102</text><rect class="caixa" x="454" y="130" width="64" height="26"/><text class="t" x="486.0" y="147" text-anchor="middle" font-size="12">Bruno</text><rect class="destaque" x="518" y="130" width="58" height="26"/><text class="t" x="547.0" y="147" text-anchor="middle" font-size="12">DSM</text><rect class="caixa" x="576" y="130" width="70" height="26"/><text class="t" x="611.0" y="147" text-anchor="middle" font-size="12">1</text><rect class="caixa" x="410" y="156" width="44" height="26"/><text class="t" x="432.0" y="173" text-anchor="middle" font-size="12">103</text><rect class="caixa" x="454" y="156" width="64" height="26"/><text class="t" x="486.0" y="173" text-anchor="middle" font-size="12">Carla</text><rect class="destaque" x="518" y="156" width="58" height="26"/><text class="t" x="547.0" y="173" text-anchor="middle" font-size="12">LOG</text><rect class="caixa" x="576" y="156" width="70" height="26"/><text class="t" x="611.0" y="173" text-anchor="middle" font-size="12">2</text><rect class="caixa" x="410" y="182" width="44" height="26"/><text class="t" x="432.0" y="199" text-anchor="middle" font-size="12">104</text><rect class="caixa" x="454" y="182" width="64" height="26"/><text class="t" x="486.0" y="199" text-anchor="middle" font-size="12">Diego</text><rect class="destaque" x="518" y="182" width="58" height="26"/><text class="t" x="547.0" y="199" text-anchor="middle" font-size="12">DSM</text><rect class="caixa" x="576" y="182" width="70" height="26"/><text class="t" x="611.0" y="199" text-anchor="middle" font-size="12">2</text><text class="t" x="410" y="236" text-anchor="start" font-size="12.5">Resultado: {DSM, LOG}, sem repetição</text><text class="q" x="410" y="254" text-anchor="start" font-size="11.5">Como todo conjunto, não repete elementos.</text></svg>
+<figcaption>À esquerda, a seleção mantém as linhas que satisfazem a condição. À direita, a projeção mantém só uma coluna e elimina repetições.</figcaption>
+</figure>
+
+
+<p>A projeção mostra bem a ligação com os conjuntos. Há três alunos de DSM e um de LOG, mas o resultado de π curso é {DSM, LOG}, porque um conjunto não repete elementos.</p>
+
+<h2>Combinando tabelas</h2>
+<p>Dados de verdade ficam espalhados em várias tabelas, e a <strong>junção</strong> (⋈) as reúne ligando linhas que têm o mesmo valor em um atributo comum, como o RA. Com ela, dá para encadear operações e responder perguntas completas. Por exemplo: quais alunos tiraram nota abaixo de 5,0?</p>
+
+<figure class="figura">
+<svg viewBox="0 0 760 270" role="img" aria-labelledby="a5f3t" font-size="13"><title id="a5f3t">Três caixas encadeadas: junção, seleção por nota menor que 5 e projeção do nome, resultando em Diego</title><text class="tt" x="24" y="28" text-anchor="start" font-size="15">Uma consulta é uma composição de operadores</text><text class="q" x="24" y="52" text-anchor="start" font-size="12">Nomes dos alunos com nota inferior a 5,0</text><defs><marker id="a5seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs><rect class="caixa" x="24" y="86" width="210" height="96" rx="10"/><text class="tt" x="129" y="112" text-anchor="middle" font-size="13">1. Junção</text><text class="t" x="129" y="136" text-anchor="middle" font-size="14">ALUNO ⋈ MATRICULA</text><text class="q" x="129" y="164" text-anchor="middle" font-size="10.5">5 tuplas, uma por matrícula</text><line class="lig" x1="238" y1="134" x2="270" y2="134" marker-end="url(#a5seta)"/><rect class="caixa" x="274" y="86" width="210" height="96" rx="10"/><text class="tt" x="379" y="112" text-anchor="middle" font-size="13">2. Seleção</text><text class="t" x="379" y="136" text-anchor="middle" font-size="14">σ nota < 5,0</text><text class="q" x="379" y="164" text-anchor="middle" font-size="10.5">1 tupla: (104, Diego, MAT019, 4,5)</text><line class="lig" x1="488" y1="134" x2="520" y2="134" marker-end="url(#a5seta)"/><rect class="corte" x="524" y="86" width="210" height="96" rx="10"/><text class="tt" x="629" y="112" text-anchor="middle" font-size="13">3. Projeção</text><text class="t" x="629" y="136" text-anchor="middle" font-size="14">π nome</text><text class="q" x="629" y="164" text-anchor="middle" font-size="10.5">{Diego}</text><text class="tt" x="24" y="224" text-anchor="start" font-size="13">Expressão completa: π nome ( σ nota < 5,0 ( ALUNO ⋈ MATRICULA ) )</text><text class="q" x="24" y="248" text-anchor="start" font-size="12">Cada operador recebe uma relação e devolve outra relação, por isso podem ser encadeados.</text></svg>
+<figcaption>O resultado de cada etapa é a entrada da seguinte, como em uma linha de montagem.</figcaption>
+</figure>
+
+
+<p>Em SQL, a mesma consulta é escrita assim:</p>
+<pre><code>SELECT DISTINCT a.nome
+FROM aluno a
+JOIN matricula m ON a.ra = m.ra
+WHERE m.nota &lt; 5.0;</code></pre>
+<p>A correspondência entre a matemática e o SQL é direta:</p>
+<ul>
+<li><strong>σ (seleção)</strong> corresponde à cláusula WHERE.</li>
+<li><strong>π (projeção)</strong> corresponde à cláusula SELECT.</li>
+<li><strong>⋈ (junção)</strong> corresponde a JOIN ... ON.</li>
+<li><strong>∪, ∩ e −</strong> correspondem a UNION, INTERSECT e EXCEPT.</li>
+</ul>
+<p>O DISTINCT reproduz a eliminação de repetições dos conjuntos. Sem ele, o SQL, que na prática trabalha com listas que admitem repetição, poderia devolver o mesmo nome mais de uma vez.</p>
+
+<h2>Por que isso importa</h2>
+<ul>
+<li><strong>Modelagem:</strong> saber que a chave primária é uma função injetora evita tabelas que misturam pessoas diferentes sob o mesmo identificador.</li>
+<li><strong>Consultas:</strong> pensar em operadores encadeados ajuda a quebrar um problema grande em passos simples e a conferir cada um.</li>
+<li><strong>Otimização:</strong> como cada operador devolve uma relação, o banco pode reorganizar a ordem dos passos, por exemplo selecionando antes de juntar, e chegar ao mesmo resultado com muito menos trabalho.</li>
+</ul>
+
+<h2>Para fechar</h2>
+<p>O banco de dados mais moderno do mercado ainda se apoia em ideias de conjuntos, relações e funções que a matemática estudou muito antes de existir computador. Quem domina essa base entende o SQL por dentro, e não só decora comandos. A mesma ideia de que a matemática organiza decisões aparece no artigo sobre <a href="artigo-lote-economico.html">lote econômico de compras</a> e no sobre <a href="artigo-recorrencia-juros-fibonacci.html">recorrência, juros e Fibonacci</a>.</p>
+<p>Ficou com alguma dúvida ou quer ver outro exemplo? <a href="index.html#contato">Entre em contato pelo site</a>. Vai ser um prazer conversar.</p>
+
+</div>
+</article>
+</main>
+
+<footer class="site-footer">
+<div class="wrap">
+<p>&copy; <span id="year"></span> Winston Aparecido Andrade</p>
+</div>
+</footer>
+
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+var navToggle = document.getElementById("navToggle");
+var siteNav = document.getElementById("siteNav");
+navToggle.addEventListener("click", function () {
+  var isOpen = siteNav.classList.toggle("open");
+  navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+});
+var root = document.documentElement;
+(function () {
+  try {
+    var saved = localStorage.getItem("theme");
+    if (saved === "dark" || saved === "light") { root.setAttribute("data-theme", saved); return; }
+  } catch (e) {}
+  var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  root.setAttribute("data-theme", prefersDark ? "dark" : "light");
+})();
+document.getElementById("themeToggle").addEventListener("click", function () {
+  var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  root.setAttribute("data-theme", next);
+  try { localStorage.setItem("theme", next); } catch (e) {}
+});
+</script>
+</body>
+</html>
