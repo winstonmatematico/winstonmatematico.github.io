@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fuzzy AHP em palavras simples | Winston Aparecido Andrade</title>
+<meta name="description" content="Uma explicação simples do Fuzzy AHP, método de decisão multicritério, com um exemplo de escolha de transportador rodoviário.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<style>
+.artigo { padding: 56px 0 72px; }
+.artigo h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); margin-bottom: 0.3em; }
+.artigo h2 { display: block; font-size: 1.5rem; margin-top: 2em; margin-bottom: 0.7em; padding-bottom: 0.3em; }
+.artigo .autor { color: var(--muted); font-size: 0.95rem; margin-bottom: 2em; }
+.artigo ul { padding-left: 1.2em; margin: 0 0 1.2em; }
+.artigo li { margin-bottom: 0.5em; }
+.voltar { display: inline-block; margin-bottom: 1.4em; font-size: 0.95rem; }
+.figura { margin: 1.8em 0 1.4em; }
+.figura svg { display: block; width: 100%; height: auto; font-family: var(--sans); }
+.figura figcaption { color: var(--muted); font-size: 0.9rem; margin-top: 0.6em; }
+.figura .t { fill: var(--ink); }
+.figura .q { fill: var(--muted); }
+.figura .tt { fill: var(--heading); font-weight: 600; }
+.figura .caixa { fill: none; stroke: var(--muted); stroke-width: 1.25; }
+.figura .destaque { fill: var(--accent); fill-opacity: 0.14; stroke: var(--accent); stroke-width: 2; }
+.figura .lig { fill: none; stroke: var(--muted); stroke-width: 1.25; }
+.figura .eixo { stroke: var(--muted); stroke-width: 1.25; }
+.figura .barra { fill: var(--muted); fill-opacity: 0.45; }
+.figura .barra-top { fill: var(--accent); }
+.figura .ponto { fill: var(--accent); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+<div class="wrap header-inner">
+<a href="index.html" class="brand">Winston Andrade</a>
+<button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false">
+<span></span><span></span><span></span>
+</button>
+<nav class="site-nav" id="siteNav">
+<a href="index.html#sobre">Sobre</a>
+<a href="index.html#pesquisa">Pesquisa</a>
+<a href="index.html#ensino">Ensino</a>
+<a href="index.html#contato">Contato</a>
+<button class="theme-toggle" id="themeToggle" aria-label="Alternar tema claro/escuro" title="Alternar tema">
+<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2.5M12 19v2.5M4.5 12H2M22 12h-2.5M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg>
+<svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z"/></svg>
+</button>
+</nav>
+</div>
+</header>
+
+<main>
+<article class="artigo">
+<div class="wrap">
+
+<a class="voltar" href="index.html#pesquisa">&larr; Voltar ao site</a>
+
+<h1>Fuzzy AHP em palavras simples: como decidir quando os critérios são incertos</h1>
+<p class="autor">Prof. Dr. Winston Aparecido Andrade</p>
+
+<p>Todo gestor já passou por isso: é preciso escolher entre algumas opções e cada uma é melhor em um aspecto. Uma é mais barata, outra mais rápida, outra mais segura. Como decidir sem depender apenas da intuição? É para esse tipo de problema que existem os métodos de decisão multicritério, e é sobre um deles, o Fuzzy AHP, que quero conversar aqui, sem complicar.</p>
+
+<h2>Primeiro, o AHP</h2>
+<p>O AHP (Analytic Hierarchy Process) organiza a decisão em níveis: o objetivo, os critérios e as alternativas. Em vez de dar notas soltas, você compara os critérios <strong>dois a dois</strong>, usando uma escala de 1 a 9. Por exemplo: "a segurança é moderadamente mais importante que o prazo". Essas comparações formam uma matriz e, por meio de um cálculo matemático, viram <strong>pesos</strong>: quanto vale cada critério na decisão. Há ainda um teste de consistência, que avisa quando os julgamentos se contradizem.</p>
+
+<figure class="figura">
+<svg viewBox="0 0 760 340" role="img" aria-labelledby="f1t" font-size="13">
+<title id="f1t">O AHP organiza a decisão em três níveis: objetivo, critérios e alternativas</title>
+<defs><marker id="seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
+<text class="tt" x="24" y="28" font-size="15">O AHP organiza a decisão em três níveis</text>
+<text class="q" x="24" y="84" font-size="11.5">Objetivo</text>
+<text class="q" x="24" y="174" font-size="11.5">Critérios</text>
+<text class="q" x="24" y="266" font-size="11.5">Alternativas</text>
+<g class="lig">
+<path d="M450 102V125"/><path d="M250 125H650"/>
+<path d="M250 125V148" marker-end="url(#seta)"/><path d="M450 125V148" marker-end="url(#seta)"/><path d="M650 125V148" marker-end="url(#seta)"/>
+<path d="M250 192V215"/><path d="M450 192V215"/><path d="M650 192V215"/><path d="M250 215H650"/>
+<path d="M250 215V240" marker-end="url(#seta)"/><path d="M450 215V240" marker-end="url(#seta)"/><path d="M650 215V240" marker-end="url(#seta)"/>
+</g>
+<rect class="destaque" x="335" y="58" width="230" height="44" rx="8"/>
+<text class="tt" x="450" y="84" text-anchor="middle">Escolher o transportador</text>
+<rect class="caixa" x="175" y="148" width="150" height="44" rx="8"/><text class="t" x="250" y="174" text-anchor="middle">Segurança</text>
+<rect class="caixa" x="375" y="148" width="150" height="44" rx="8"/><text class="t" x="450" y="174" text-anchor="middle">Prazo</text>
+<rect class="caixa" x="575" y="148" width="150" height="44" rx="8"/><text class="t" x="650" y="174" text-anchor="middle">Custo</text>
+<rect class="caixa" x="175" y="240" width="150" height="44" rx="8"/><text class="t" x="250" y="266" text-anchor="middle">Transportador X</text>
+<rect class="caixa" x="375" y="240" width="150" height="44" rx="8"/><text class="t" x="450" y="266" text-anchor="middle">Transportador Y</text>
+<rect class="caixa" x="575" y="240" width="150" height="44" rx="8"/><text class="t" x="650" y="266" text-anchor="middle">Transportador Z</text>
+<text class="q" x="450" y="320" text-anchor="middle" font-size="11.5">Cada critério avalia todos os transportadores</text>
+</svg>
+<figcaption>O objetivo fica no topo, os critérios no meio e cada critério avalia todas as alternativas.</figcaption>
+</figure>
+
+<h2>Onde o AHP clássico tropeça</h2>
+<p>Na vida real, ninguém tem tanta precisão. Quando um especialista diz que um critério é "3 vezes mais importante", muitas vezes ele quer dizer "mais ou menos entre 2 e 4". O AHP clássico exige um número exato e esconde essa incerteza.</p>
+
+<h2>Entra a lógica fuzzy</h2>
+<p>A lógica fuzzy trabalha com graus, e não só com "sim ou não". No Fuzzy AHP, cada julgamento deixa de ser um número e passa a ser uma faixa com três valores: o mínimo, o mais provável e o máximo. Assim, "moderadamente mais importante" vira (2, 3, 4). A dúvida do especialista passa a fazer parte do cálculo. No fim, a faixa é convertida em um número claro (a defuzzificação) e os pesos ficam prontos para uso.</p>
+
+<figure class="figura">
+<svg viewBox="0 0 760 324" role="img" aria-labelledby="f2t" font-size="13">
+<title id="f2t">Um julgamento fuzzy é uma faixa: mínimo 2, mais provável 3, máximo 4</title>
+<text class="tt" x="24" y="28" font-size="15">Um julgamento fuzzy é uma faixa, não um número exato</text>
+<text class="q" x="24" y="104" font-size="11.5">Grau de pertencimento</text>
+<polygon class="destaque" points="240,250 380,100 520,250"/>
+<line x1="380" y1="100" x2="380" y2="72" class="eixo" stroke-dasharray="4 4"/>
+<text class="q" x="390" y="76" font-size="11.5">AHP clássico: um único valor exato</text>
+<circle class="ponto" cx="240" cy="250" r="5"/><circle class="ponto" cx="380" cy="100" r="5"/><circle class="ponto" cx="520" cy="250" r="5"/>
+<text class="tt" x="392" y="108" font-size="13">mais provável: 3</text>
+<text class="t" x="230" y="244" text-anchor="end" font-size="13">mínimo: 2</text>
+<text class="t" x="530" y="244" font-size="13">máximo: 4</text>
+<line class="eixo" x1="100" y1="250" x2="660" y2="250"/>
+<g class="eixo"><line x1="100" y1="250" x2="100" y2="256"/><line x1="240" y1="250" x2="240" y2="256"/><line x1="380" y1="250" x2="380" y2="256"/><line x1="520" y1="250" x2="520" y2="256"/><line x1="660" y1="250" x2="660" y2="256"/></g>
+<g class="q" text-anchor="middle" font-size="11.5"><text x="100" y="274">1</text><text x="240" y="274">2</text><text x="380" y="274">3</text><text x="520" y="274">4</text><text x="660" y="274">5</text></g>
+<text class="q" x="380" y="304" text-anchor="middle" font-size="11.5">Importância de um critério sobre o outro</text>
+</svg>
+<figcaption>O AHP clássico exigiria um único valor. O Fuzzy AHP aceita a faixa de 2 a 4, com 3 como valor mais provável.</figcaption>
+</figure>
+
+<h2>Um exemplo com transporte rodoviário</h2>
+<p>Imagine uma empresa que precisa escolher entre três transportadores, X, Y e Z, para uma carga rodoviária. Os critérios são <strong>segurança</strong> (risco de roubo e avaria), <strong>prazo</strong> e <strong>custo</strong>. Os valores abaixo são fictícios, apenas para ensinar.</p>
+<p>Os julgamentos foram estes:</p>
+<ul>
+<li>Segurança é <strong>moderadamente</strong> mais importante que prazo, ou (2, 3, 4).</li>
+<li>Segurança é <strong>fortemente</strong> mais importante que custo, ou (4, 5, 6).</li>
+<li>Prazo é <strong>moderadamente</strong> mais importante que custo, ou (2, 3, 4).</li>
+</ul>
+<p>A lógica é simples: em carga rodoviária, uma perda por roubo costuma custar mais do que a economia no frete. Depois dos cálculos e da defuzzificação, os pesos dos critérios ficam assim:</p>
+<ul>
+<li>Segurança: <strong>62,9%</strong></li>
+<li>Prazo: <strong>26,3%</strong></li>
+<li>Custo: <strong>10,7%</strong></li>
+</ul>
+<p>Em seguida, comparamos os transportadores dentro de cada critério. X é muito mais seguro, Y é o mais rápido e Z é o mais barato. Combinando os pesos dos critérios com o desempenho de cada um, o resultado final é:</p>
+<ul>
+<li><strong>Transportador X: 48,6%</strong></li>
+<li>Transportador Y: 29,2%</li>
+<li>Transportador Z: 22,2%</li>
+</ul>
+
+<figure class="figura">
+<svg viewBox="0 0 760 232" role="img" aria-labelledby="f3t" font-size="13">
+<title id="f3t">O transportador X vence com 48,6% da nota final, contra 29,2% do Y e 22,2% do Z</title>
+<text class="tt" x="24" y="28" font-size="15">O transportador X vence com 48,6% da nota final</text>
+<text class="q" x="24" y="48" font-size="11.5">Nota final = peso de cada critério × desempenho do transportador nele</text>
+<line class="eixo" x1="170" y1="66" x2="170" y2="214"/>
+<rect class="barra-top" x="170" y="77" width="388.8" height="30" rx="4"/>
+<text class="t" x="158" y="96" text-anchor="end" font-size="13">Transportador X</text>
+<text class="tt" x="568.8" y="96" font-size="13">48,6%</text>
+<rect class="barra" x="170" y="127" width="233.6" height="30" rx="4"/>
+<text class="t" x="158" y="146" text-anchor="end" font-size="13">Transportador Y</text>
+<text class="tt" x="413.6" y="146" font-size="13">29,2%</text>
+<rect class="barra" x="170" y="177" width="177.6" height="30" rx="4"/>
+<text class="t" x="158" y="196" text-anchor="end" font-size="13">Transportador Z</text>
+<text class="tt" x="357.6" y="196" font-size="13">22,2%</text>
+</svg>
+<figcaption>Valores fictícios do exemplo. O transportador X é o único que se destaca, porque a segurança, que pesa 62,9%, é o ponto forte dele.</figcaption>
+</figure>
+
+<p>X vence sem ser o mais rápido nem o mais barato. Ele ganha porque a segurança pesa muito neste problema.</p>
+
+<h2>O que esse método tem de bom</h2>
+<ul>
+<li><strong>Transparência:</strong> dá para explicar por que uma alternativa venceu, com números e raciocínio à vista.</li>
+<li><strong>Respeito à incerteza:</strong> as dúvidas do especialista entram no cálculo.</li>
+<li><strong>Flexibilidade:</strong> quem discordar dos pesos pode mudar os julgamentos e ver como a decisão se altera.</li>
+<li><strong>Aplicação ampla:</strong> funciona bem em logística, análise de risco e em muitas outras áreas.</li>
+</ul>
+
+<h2>Para fechar</h2>
+<p>O Fuzzy AHP não substitui o bom senso nem a experiência de quem decide. Ele organiza o pensamento e mostra o caminho com clareza. É um método que uso na minha pesquisa, principalmente em problemas de logística e análise de risco, e que gosto de levar para a sala de aula. Se quiser saber mais, veja a <a href="index.html#pesquisa">seção de Pesquisa</a> deste site, onde está meu artigo sobre modelagem bayesiana aplicada à estimativa de risco no transporte rodoviário de cargas.</p>
+<p>Ficou com alguma dúvida ou quer ver outro exemplo? <a href="index.html#contato">Entre em contato pelo site</a>. Vai ser um prazer conversar.</p>
+
+</div>
+</article>
+</main>
+
+<footer class="site-footer">
+<div class="wrap">
+<p>&copy; <span id="year"></span> Winston Aparecido Andrade</p>
+</div>
+</footer>
+
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+var navToggle = document.getElementById("navToggle");
+var siteNav = document.getElementById("siteNav");
+navToggle.addEventListener("click", function () {
+  var isOpen = siteNav.classList.toggle("open");
+  navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+});
+var root = document.documentElement;
+(function () {
+  try {
+    var saved = localStorage.getItem("theme");
+    if (saved === "dark" || saved === "light") { root.setAttribute("data-theme", saved); return; }
+  } catch (e) {}
+  var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  root.setAttribute("data-theme", prefersDark ? "dark" : "light");
+})();
+document.getElementById("themeToggle").addEventListener("click", function () {
+  var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  root.setAttribute("data-theme", next);
+  try { localStorage.setItem("theme", next); } catch (e) {}
+});
+</script>
+</body>
+</html>
