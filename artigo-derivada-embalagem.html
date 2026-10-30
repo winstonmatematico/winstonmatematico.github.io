@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Derivada na prática: como a matemática descobre o melhor tamanho de uma caixa | Winston Aparecido Andrade</title>
+<meta name="description" content="Como a derivada encontra o maior volume de uma caixa de papelão feita a partir de uma folha quadrada, com figuras e contas passo a passo.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<style>
+.artigo { padding: 56px 0 72px; }
+.artigo h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); margin-bottom: 0.3em; }
+.artigo h2 { display: block; font-size: 1.5rem; margin-top: 2em; margin-bottom: 0.7em; padding-bottom: 0.3em; }
+.artigo .autor { color: var(--muted); font-size: 0.95rem; margin-bottom: 2em; }
+.artigo ul { padding-left: 1.2em; margin: 0 0 1.2em; }
+.artigo li { margin-bottom: 0.5em; }
+.formula { background: var(--paper-alt); border-left: 3px solid var(--accent); padding: 12px 18px; margin: 1.2em 0; font-family: var(--serif); font-size: 1.1rem; overflow-x: auto; }
+.voltar { display: inline-block; margin-bottom: 1.4em; font-size: 0.95rem; }
+.figura { margin: 1.8em 0 1.4em; }
+.figura svg { display: block; width: 100%; height: auto; font-family: var(--sans); }
+.figura figcaption { color: var(--muted); font-size: 0.9rem; margin-top: 0.6em; }
+.figura .t { fill: var(--ink); }
+.figura .q { fill: var(--muted); }
+.figura .tt { fill: var(--heading); font-weight: 600; }
+.figura .caixa { fill: none; stroke: var(--muted); stroke-width: 1.25; }
+.figura .destaque { fill: var(--accent); fill-opacity: 0.14; stroke: var(--accent); stroke-width: 2; }
+.figura .corte { fill: var(--accent); fill-opacity: 0.3; stroke: var(--accent); stroke-width: 1.25; }
+.figura .lig { fill: none; stroke: var(--muted); stroke-width: 1.25; }
+.figura .eixo { stroke: var(--muted); stroke-width: 1.25; fill: none; }
+.figura .grade { stroke: var(--line); stroke-width: 1; }
+.figura .tracejado { stroke-dasharray: 5 4; }
+.figura .barra { fill: var(--muted); fill-opacity: 0.45; }
+.figura .barra-top { fill: var(--accent); }
+.figura .ponto { fill: var(--accent); }
+.figura .vazio { fill: var(--paper); stroke: var(--muted); stroke-width: 1.5; }
+.figura .curva { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linejoin: round; }
+.figura .curva-m { fill: none; stroke: var(--muted); stroke-width: 2; stroke-linejoin: round; }
+.figura .serra { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+<div class="wrap header-inner">
+<a href="index.html" class="brand">Winston Andrade</a>
+<button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false">
+<span></span><span></span><span></span>
+</button>
+<nav class="site-nav" id="siteNav">
+<a href="index.html#sobre">Sobre</a>
+<a href="index.html#pesquisa">Pesquisa</a>
+<a href="index.html#ensino">Ensino</a>
+<a href="index.html#contato">Contato</a>
+<button class="theme-toggle" id="themeToggle" aria-label="Alternar tema claro/escuro" title="Alternar tema">
+<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2.5M12 19v2.5M4.5 12H2M22 12h-2.5M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg>
+<svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z"/></svg>
+</button>
+</nav>
+</div>
+</header>
+
+<main>
+<article class="artigo">
+<div class="wrap">
+
+<a class="voltar" href="index.html#pesquisa">&larr; Voltar ao site</a>
+
+<h1>Derivada na prática: como a matemática descobre o melhor tamanho de uma caixa</h1>
+<p class="autor">Prof. Dr. Winston Aparecido Andrade</p>
+
+<p>Um fabricante de caixas de papelão tem folhas quadradas de 12 cm de lado. Para montar caixas abertas, ele recorta um quadradinho em cada canto e dobra as abas para cima. A pergunta é simples: qual deve ser o tamanho do corte para a caixa ter o maior volume possível? Este é um dos exemplos que mais gosto de usar para mostrar, sem complicar, para que serve a derivada.</p>
+
+<h2>O problema</h2>
+<p>Chamemos de <strong>x</strong> o lado de cada quadrado recortado, em centímetros. Quanto maior o corte, mais alta fica a caixa, mas menor fica a base. Há um equilíbrio entre altura e base, e é nele que está o melhor volume.</p>
+
+<figure class="figura">
+<svg viewBox="0 0 760 340" role="img" aria-labelledby="a1f1t" font-size="13"><title id="a1f1t">Uma folha quadrada de 12 cm, com quadrados de lado x recortados nos cantos, vira uma caixa aberta de dimensões x, 12 menos 2x e 12 menos 2x</title><defs><marker id="a1seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs><text class="tt" x="24" y="28" text-anchor="start" font-size="15">Cortar quadrados de lado x nos cantos define a caixa</text><rect class="caixa" x="40" y="70" width="216" height="216"/><rect class="corte" x="40" y="70" width="36" height="36"/><rect class="corte" x="220" y="70" width="36" height="36"/><rect class="corte" x="40" y="250" width="36" height="36"/><rect class="corte" x="220" y="250" width="36" height="36"/><rect class="caixa tracejado" x="76" y="106" width="144" height="144" stroke-dasharray="5 4"/><text class="tt" x="58" y="92" text-anchor="middle" font-size="13">x</text><text class="q" x="148" y="182" text-anchor="middle" font-size="12">base</text><text class="t" x="148" y="200" text-anchor="middle" font-size="13">12 − 2x</text><text class="q" x="148" y="58" text-anchor="middle" font-size="12">folha de 12 cm de lado</text><text class="q" x="148" y="310" text-anchor="middle" font-size="12">A folha, com os 4 cantos recortados</text><path class="lig" d="M290 178H370" marker-end="url(#a1seta)"/><text class="q" x="330" y="166" text-anchor="middle" font-size="12">dobrar</text><polygon class="destaque" points="430,200 574,200 634.5,156.8 490.5,156.8"/><polygon class="caixa" points="574,200 634.5,156.8 634.5,192.8 574,236"/><polygon class="caixa" points="430,200 574,200 574,236 430,236"/><text class="t" x="502" y="258" text-anchor="middle" font-size="13">12 − 2x</text><text class="t" x="646.5" y="182.4" text-anchor="start" font-size="13">12 − 2x</text><text class="tt" x="420" y="222" text-anchor="end" font-size="13">x</text><text class="q" x="522" y="310" text-anchor="middle" font-size="12">A caixa montada, aberta em cima</text></svg>
+<figcaption>Os quadrados em destaque são os cortes. A linha tracejada marca a base da caixa, de lado 12 − 2x.</figcaption>
+</figure>
+
+
+<h2>Passo 1: escrever o volume em função de x</h2>
+<p>Depois de dobrar, a caixa tem altura x e uma base quadrada de lado 12 − 2x, porque saem dois cortes de cada lado da folha. O volume é o produto das três medidas:</p>
+<div class="formula">V(x) = x · (12 − 2x)² = 4x³ − 48x² + 144x</div>
+<p>Repare que x só faz sentido entre 0 e 6 cm. Com x = 0 não há altura, e com x = 6 a folha inteira seria cortada.</p>
+
+<h2>Testar valores ajuda, mas não basta</h2>
+<p>Uma primeira ideia é experimentar alguns cortes e comparar os volumes. Dá uma boa pista, mas não prova nada: sempre sobra a dúvida se um valor entre os testados seria ainda melhor.</p>
+
+<figure class="figura">
+<svg viewBox="0 0 760 310" role="img" aria-labelledby="a1f2t" font-size="13"><title id="a1f2t">Volumes da caixa para x igual a 1, 2, 3, 4 e 5 centímetros: 100, 128, 108, 64 e 20</title><text class="tt" x="24" y="28" text-anchor="start" font-size="15">Testando valores, x = 2 cm rende o maior volume</text><text class="q" x="24" y="48" text-anchor="start" font-size="11.5">Volume da caixa (cm³) para cada tamanho de corte</text><line class="eixo" x1="80" y1="250" x2="680" y2="250" /><rect class="barra" x="120" y="120" width="64" height="130" rx="4"/><text class="tt" x="152" y="112" text-anchor="middle" font-size="13">100</text><text class="t" x="152" y="272" text-anchor="middle" font-size="13">x = 1 cm</text><rect class="barra-top" x="230" y="83.6" width="64" height="166.4" rx="4"/><text class="tt" x="262" y="75.6" text-anchor="middle" font-size="13">128</text><text class="t" x="262" y="272" text-anchor="middle" font-size="13">x = 2 cm</text><rect class="barra" x="340" y="109.6" width="64" height="140.4" rx="4"/><text class="tt" x="372" y="101.6" text-anchor="middle" font-size="13">108</text><text class="t" x="372" y="272" text-anchor="middle" font-size="13">x = 3 cm</text><rect class="barra" x="450" y="166.8" width="64" height="83.2" rx="4"/><text class="tt" x="482" y="158.8" text-anchor="middle" font-size="13">64</text><text class="t" x="482" y="272" text-anchor="middle" font-size="13">x = 4 cm</text><rect class="barra" x="560" y="224" width="64" height="26" rx="4"/><text class="tt" x="592" y="216" text-anchor="middle" font-size="13">20</text><text class="t" x="592" y="272" text-anchor="middle" font-size="13">x = 5 cm</text><text class="q" x="380" y="296" text-anchor="middle" font-size="11.5">Tentativa e erro não garante que não existe um valor ainda melhor entre eles</text></svg>
+<figcaption>Entre os cortes testados, 2 cm dá o maior volume, mas não sabemos se há algo melhor entre 1 e 3 cm.</figcaption>
+</figure>
+
+
+<h2>O que a derivada diz</h2>
+<p>A derivada mede a <strong>taxa de variação</strong> de uma função, ou seja, a inclinação da curva em cada ponto. Pela definição, ela é o limite da razão entre a variação de V e a variação de x, quando essa variação de x tende a zero. Na prática, usamos as regras de derivação, que dão o mesmo resultado com muito menos trabalho.</p>
+<p>A ideia que importa aqui é esta: enquanto a curva sobe, a inclinação é positiva. Quando ela desce, é negativa. No topo, passa de positiva para negativa, e por um instante é <strong>zero</strong>. Logo, o máximo está onde a derivada vale zero.</p>
+
+<h2>Passo 2: derivar e igualar a zero</h2>
+<p>Derivando cada termo de V(x):</p>
+<div class="formula">V′(x) = 12x² − 96x + 144 = 12 · (x − 2) · (x − 6)</div>
+<p>Igualando a zero, encontramos dois candidatos: <strong>x = 2</strong> e <strong>x = 6</strong>.</p>
+
+<h2>Passo 3: escolher o valor certo</h2>
+<ul>
+<li>Em <strong>x = 6</strong>, o volume é zero. Esse é um ponto de mínimo, e não o que procuramos.</li>
+<li>Em <strong>x = 2</strong>, o volume é V(2) = 2 · 8 · 8 = <strong>128 cm³</strong>.</li>
+<li>Para confirmar que x = 2 é mesmo um máximo, olhamos a segunda derivada: V″(x) = 24x − 96, que vale −48 em x = 2. Sendo negativa, a curva está "virada para baixo" ali, e portanto é um máximo.</li>
+</ul>
+
+<figure class="figura">
+<svg viewBox="0 0 760 330" role="img" aria-labelledby="a1f3t" font-size="13"><title id="a1f3t">Gráfico do volume V de x: curva que sobe até o máximo de 128 cm³ em x igual a 2 e cai a zero em x igual a 6</title><text class="tt" x="24" y="28" text-anchor="start" font-size="15">O volume é máximo onde a inclinação da curva é zero</text><line class="grade" x1="80" y1="195" x2="700" y2="195" /><text class="q" x="70" y="199" text-anchor="end" font-size="11.5">50</text><line class="grade" x1="80" y1="120" x2="700" y2="120" /><text class="q" x="70" y="124" text-anchor="end" font-size="11.5">100</text><line class="grade" x1="80" y1="45" x2="700" y2="45" /><text class="q" x="70" y="49" text-anchor="end" font-size="11.5">150</text><text class="q" x="70" y="274" text-anchor="end" font-size="11.5">0</text><line class="eixo" x1="80" y1="270" x2="700" y2="270" /><line class="eixo" x1="80" y1="270" x2="80" y2="39" /><line class="eixo" x1="80" y1="270" x2="80" y2="276" /><text class="q" x="80" y="292" text-anchor="middle" font-size="11.5">0</text><line class="eixo" x1="183.3" y1="270" x2="183.3" y2="276" /><text class="q" x="183.3" y="292" text-anchor="middle" font-size="11.5">1</text><line class="eixo" x1="286.7" y1="270" x2="286.7" y2="276" /><text class="q" x="286.7" y="292" text-anchor="middle" font-size="11.5">2</text><line class="eixo" x1="390" y1="270" x2="390" y2="276" /><text class="q" x="390" y="292" text-anchor="middle" font-size="11.5">3</text><line class="eixo" x1="493.3" y1="270" x2="493.3" y2="276" /><text class="q" x="493.3" y="292" text-anchor="middle" font-size="11.5">4</text><line class="eixo" x1="596.7" y1="270" x2="596.7" y2="276" /><text class="q" x="596.7" y="292" text-anchor="middle" font-size="11.5">5</text><line class="eixo" x1="700" y1="270" x2="700" y2="276" /><text class="q" x="700" y="292" text-anchor="middle" font-size="11.5">6</text><polyline class="curva" points="80,270 85.2,259.4 90.3,249.1 95.5,239.2 100.7,229.6 105.8,220.4 111,211.5 116.2,203 121.3,194.7 126.5,186.8 131.7,179.3 136.8,172 142,165 147.2,158.4 152.3,152 157.5,146 162.7,140.2 167.8,134.7 173,129.5 178.2,124.6 183.3,120 188.5,115.6 193.7,111.5 198.8,107.7 204,104.1 209.2,100.8 214.3,97.7 219.5,94.9 224.7,92.3 229.8,89.9 235,87.8 240.2,85.8 245.3,84.1 250.5,82.7 255.7,81.4 260.8,80.3 266,79.5 271.2,78.8 276.3,78.4 281.5,78.1 286.7,78 291.8,78.1 297,78.4 302.2,78.8 307.3,79.4 312.5,80.2 317.7,81.1 322.8,82.2 328,83.4 333.2,84.7 338.3,86.3 343.5,87.9 348.7,89.7 353.8,91.6 359,93.6 364.2,95.7 369.3,98 374.5,100.3 379.7,102.8 384.8,105.3 390,108 395.2,110.7 400.3,113.6 405.5,116.5 410.7,119.5 415.8,122.5 421,125.7 426.2,128.8 431.3,132.1 436.5,135.4 441.7,138.8 446.8,142.1 452,145.6 457.2,149.1 462.3,152.6 467.5,156.1 472.7,159.6 477.8,163.2 483,166.8 488.2,170.4 493.3,174 498.5,177.6 503.7,181.2 508.8,184.8 514,188.4 519.2,191.9 524.3,195.4 529.5,198.9 534.7,202.4 539.8,205.9 545,209.3 550.2,212.6 555.3,215.9 560.5,219.2 565.7,222.3 570.8,225.5 576,228.5 581.2,231.5 586.3,234.4 591.5,237.3 596.7,240 601.8,242.7 607,245.2 612.2,247.7 617.3,250 622.5,252.3 627.7,254.4 632.8,256.4 638,258.3 643.2,260.1 648.3,261.8 653.5,263.3 658.7,264.6 663.8,265.8 669,266.9 674.2,267.8 679.3,268.6 684.5,269.2 689.7,269.6 694.8,269.9 700,270"/><line class="eixo tracejado" x1="231.7" y1="78" x2="341.7" y2="78" stroke-dasharray="5 4"/><line class="eixo tracejado" x1="286.7" y1="78" x2="286.7" y2="270" stroke-dasharray="5 4"/><circle class="ponto" cx="286.7" cy="78" r="6"/><text class="tt" x="286.7" y="52" text-anchor="middle" font-size="13">máximo: x = 2 cm, V = 128 cm³</text><text class="q" x="348.7" y="72" text-anchor="start" font-size="11.5">inclinação zero (V′ = 0)</text><circle class="vazio" cx="700" cy="270" r="5"/><text class="q" x="692" y="232" text-anchor="end" font-size="11.5">x = 6: volume zero</text><text class="q" x="700" y="312" text-anchor="end" font-size="11.5">x, o lado do corte (cm)</text><text class="q" x="88" y="43" text-anchor="start" font-size="11.5">V (cm³)</text></svg>
+<figcaption>A curva do volume sobe até x = 2 cm e depois desce. No topo, a tangente é horizontal, e a derivada vale zero.</figcaption>
+</figure>
+
+
+<h2>O resultado</h2>
+<p>O corte ideal é de <strong>2 cm</strong>. A caixa tem então 8 cm × 8 cm de base e 2 cm de altura, com volume máximo de <strong>128 cm³</strong>. Sem testar valor por valor, a derivada apontou o ótimo e ainda mostrou que não existe nada melhor.</p>
+
+<h2>Por que isso importa</h2>
+<ul>
+<li><strong>Economia de material:</strong> com a mesma folha, obtém-se a caixa de maior capacidade.</li>
+<li><strong>Método geral:</strong> o mesmo raciocínio serve para custos, áreas, tempos e lucros, sempre que se busca o melhor valor de algo que varia.</li>
+<li><strong>Decisão com argumento:</strong> o resultado vem acompanhado de uma justificativa matemática, e não de um palpite.</li>
+</ul>
+
+<h2>Para fechar</h2>
+<p>A derivada é, no fundo, uma ferramenta para encontrar o melhor ponto de uma curva. Esse mesmo olhar aparece em outros problemas do dia a dia da logística. Se quiser ver outro exemplo, leia o artigo sobre o <a href="artigo-lote-economico.html">lote econômico de compras</a>, onde a mesma ideia ajuda a decidir quanto e quando comprar.</p>
+<p>Ficou com alguma dúvida? <a href="index.html#contato">Entre em contato pelo site</a>. Vai ser um prazer conversar.</p>
+
+</div>
+</article>
+</main>
+
+<footer class="site-footer">
+<div class="wrap">
+<p>&copy; <span id="year"></span> Winston Aparecido Andrade</p>
+</div>
+</footer>
+
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+var navToggle = document.getElementById("navToggle");
+var siteNav = document.getElementById("siteNav");
+navToggle.addEventListener("click", function () {
+  var isOpen = siteNav.classList.toggle("open");
+  navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+});
+var root = document.documentElement;
+(function () {
+  try {
+    var saved = localStorage.getItem("theme");
+    if (saved === "dark" || saved === "light") { root.setAttribute("data-theme", saved); return; }
+  } catch (e) {}
+  var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  root.setAttribute("data-theme", prefersDark ? "dark" : "light");
+})();
+document.getElementById("themeToggle").addEventListener("click", function () {
+  var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  root.setAttribute("data-theme", next);
+  try { localStorage.setItem("theme", next); } catch (e) {}
+});
+</script>
+</body>
+</html>
