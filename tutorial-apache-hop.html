@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial em vídeo: instalando o Apache Hop no Windows | Winston Aparecido Andrade</title>
+<meta name="description" content="Passo a passo em vídeo para instalar o Java 21 e o Apache Hop 2.20.0 no Windows e abrir o primeiro pipeline.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<style>
+.artigo { padding: 56px 0 72px; }
+.artigo h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); margin-bottom: 0.3em; }
+.artigo h2 { display: block; font-size: 1.5rem; margin-top: 2em; margin-bottom: 0.7em; padding-bottom: 0.3em; }
+.artigo .autor { color: var(--muted); font-size: 0.95rem; margin-bottom: 2em; }
+.artigo ul, .artigo ol { padding-left: 1.2em; margin: 0 0 1.2em; }
+.artigo li { margin-bottom: 0.5em; }
+.voltar { display: inline-block; margin-bottom: 1.4em; font-size: 0.95rem; }
+.video-box { margin: 1.4em 0 0.4em; }
+.video-box iframe { display: block; width: 100%; aspect-ratio: 16/9; height: auto; border: 0; border-radius: 10px; background: #000; border: 1px solid var(--line); }
+.video-box .legenda { color: var(--muted); font-size: 0.9rem; margin-top: 0.6em; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+<div class="wrap header-inner">
+<a href="index.html" class="brand">Winston Andrade</a>
+<button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false">
+<span></span><span></span><span></span>
+</button>
+<nav class="site-nav" id="siteNav">
+<a href="index.html#sobre">Sobre</a>
+<a href="index.html#pesquisa">Pesquisa</a>
+<a href="index.html#ensino">Ensino</a>
+<a href="index.html#contato">Contato</a>
+<button class="theme-toggle" id="themeToggle" aria-label="Alternar tema claro/escuro" title="Alternar tema">
+<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2.5M12 19v2.5M4.5 12H2M22 12h-2.5M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg>
+<svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z"/></svg>
+</button>
+</nav>
+</div>
+</header>
+
+<main>
+<article class="artigo">
+<div class="wrap">
+
+<a class="voltar" href="index.html#pesquisa">&larr; Voltar ao site</a>
+
+<h1>Tutorial em vídeo: instalando o Apache Hop no Windows</h1>
+<p class="autor">Prof. Dr. Winston Aparecido Andrade</p>
+
+<p>O Apache Hop é uma plataforma gratuita para construir fluxos de dados (pipelines) de forma visual, sem escrever código. Preparei este tutorial para quem está começando: do Java ao primeiro pipeline funcionando, com as telas reais de cada passo. A narração é feita por uma voz sintética, e o conteúdo e as telas são de minha autoria.</p>
+
+<h2>Versão completa (cerca de 8 min)</h2>
+<div class="video-box">
+<iframe src="https://www.youtube-nocookie.com/embed/6gplsCWJ_jo" title="Instalando o Apache Hop no Windows (versão completa)" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+<p class="legenda"><a href="https://youtu.be/6gplsCWJ_jo">Assistir no YouTube</a></p>
+<p class="legenda">Instalação do Java 21 e do Apache Hop 2.20.0, com todos os passos na prática.</p>
+</div>
+
+<h2>Versão resumida (cerca de 4 min)</h2>
+<div class="video-box">
+<iframe src="https://www.youtube-nocookie.com/embed/UPTHnQJieN4" title="Instalando o Apache Hop no Windows (versão resumida)" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+<p class="legenda"><a href="https://youtu.be/UPTHnQJieN4">Assistir no YouTube</a></p>
+<p class="legenda">Os passos essenciais, para quem já conhece o ambiente.</p>
+</div>
+
+<h2>O que você vai ver</h2>
+<ol>
+<li>Verificação e instalação do Java 21 (JDK) no Windows.</li>
+<li>Configuração da variável JAVA_HOME e conferência com <em>java -version</em>.</li>
+<li>Download e extração do Apache Hop 2.20.0.</li>
+<li>Abertura da interface gráfica (Hop GUI) pelo Prompt de Comando.</li>
+<li>Primeiro teste: um pipeline pronto, executado na tela principal.</li>
+</ol>
+
+<h2>Requisitos</h2>
+<ul>
+<li>Windows 10 ou 11, com permissão para instalar programas.</li>
+<li>Conexão com a internet para baixar o Java e o Apache Hop.</li>
+<li>Cerca de 1 GB de espaço livre em disco.</li>
+</ul>
+
+<p><a class="voltar" href="index.html#pesquisa">&larr; Voltar ao site</a></p>
+
+</div>
+</article>
+</main>
+
+<footer class="site-footer">
+<div class="wrap">
+<p>&copy; <span id="year"></span> Winston Aparecido Andrade</p>
+</div>
+</footer>
+
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+var navToggle = document.getElementById("navToggle");
+var siteNav = document.getElementById("siteNav");
+navToggle.addEventListener("click", function () {
+  var isOpen = siteNav.classList.toggle("open");
+  navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+});
+var root = document.documentElement;
+(function () {
+  try {
+    var saved = localStorage.getItem("theme");
+    if (saved === "dark" || saved === "light") { root.setAttribute("data-theme", saved); return; }
+  } catch (e) {}
+  var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  root.setAttribute("data-theme", prefersDark ? "dark" : "light");
+})();
+document.getElementById("themeToggle").addEventListener("click", function () {
+  var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  root.setAttribute("data-theme", next);
+  try { localStorage.setItem("theme", next); } catch (e) {}
+});
+</script>
+</body>
+</html>
