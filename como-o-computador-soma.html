@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Como o computador soma? Da linguagem C ao transistor | Winston Aparecido Andrade</title>
+<meta name="description" content="Página interativa com ilustrações animadas: o que acontece de verdade quando o computador executa c = a + b, do código C até os transistores.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: coluna única de leitura; cada ilustração é um cartão com controles e uma frase que muda a cada passo. */
+:root{
+  --bg:#F3F6F3;--surface:#FFFFFF;--ink:#14201B;--muted:#53625B;--line:#D3DDD6;--soft:#E7EEE9;
+  --sw:#5B4BB7;--sw-soft:#ECE9FA;--hw:#0B7A5B;--hw-soft:#DDF1EA;
+  --sig:#C26A00;--sig-soft:#FBEBD3;--lo:#2F6FDB;--lo-soft:#E0EBFC;--off:#B7C2BB;
+  --display:"Bricolage Grotesque","IBM Plex Sans",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1613;--surface:#17211C;--ink:#E6EEE9;--muted:#9AABA2;--line:#2C3B33;--soft:#1F2C26;
+  --sw:#A99CF2;--sw-soft:#2A2748;--hw:#4CC9A1;--hw-soft:#173A30;
+  --sig:#F2A34A;--sig-soft:#3E2C12;--lo:#6FA2FF;--lo-soft:#1B2A4A;--off:#40504A;color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#0F1613;--surface:#17211C;--ink:#E6EEE9;--muted:#9AABA2;--line:#2C3B33;--soft:#1F2C26;
+  --sw:#A99CF2;--sw-soft:#2A2748;--hw:#4CC9A1;--hw-soft:#173A30;
+  --sig:#F2A34A;--sig-soft:#3E2C12;--lo:#6FA2FF;--lo-soft:#1B2A4A;--off:#40504A;color-scheme:dark;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.65 var(--body)}
+main{max-width:780px;margin:0 auto;padding:40px 16px 72px;display:flex;flex-direction:column;gap:40px}
+h1,h2{font-family:var(--display);font-weight:700;text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(30px,6vw,46px);letter-spacing:-.01em}
+h2{font-size:clamp(22px,4vw,28px);margin-bottom:6px}
+p{margin:0 0 12px;max-width:65ch}
+a{color:var(--hw)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--sig);outline-offset:2px}
+.hero{display:flex;flex-direction:column;gap:14px}
+.kicker{font:500 13px var(--mono);color:var(--hw);letter-spacing:.04em}
+.code{font-family:var(--mono);background:var(--soft);border-radius:6px;padding:1px 6px;font-size:.92em}
+.src{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:15px;color:var(--muted)}
+.src b{color:var(--ink);font-weight:600}
+.sec{display:flex;flex-direction:column;gap:10px}
+.num{font:500 13px var(--mono);color:var(--sw)}
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:14px;overflow:hidden}
+.cap{margin:0;padding:12px 14px;border-radius:10px;background:var(--soft);font-size:16px;min-height:3.4em}
+.cap b{font-weight:600}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{font:500 15px var(--body);padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--hw)}
+.btn.main{background:var(--hw);border-color:var(--hw);color:#fff}
+:root[data-theme="dark"] .btn.main{color:#06130E}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.main{color:#06130E}}
+.btn[aria-pressed="true"]{background:var(--sig-soft);border-color:var(--sig);color:var(--ink)}
+.lbl{font:500 12px var(--mono);color:var(--muted);text-transform:none}
+.see{font-size:15px;color:var(--muted);margin:0}
+.see b{color:var(--ink);font-weight:600}
+
+/* andares */
+.floors{display:flex;flex-direction:column;gap:6px}
+.floor{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:center;text-align:left;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font:500 16px var(--body)}
+.floor .mk{width:14px;height:14px;border-radius:50%;background:var(--off);transition:background .4s,transform .4s}
+.floor.sw .mk{background:var(--sw-soft)}.floor.hw .mk{background:var(--hw-soft)}
+.floor.on{border-color:var(--sig);background:var(--sig-soft)}
+.floor.on .mk{background:var(--sig);transform:scale(1.25)}
+.floor small{display:block;font:400 13px var(--mono);color:var(--muted)}
+.panel{border-left:4px solid var(--sw);padding:6px 0 6px 14px}
+.panel.hw{border-color:var(--hw)}
+.panel pre{margin:6px 0 0;font:400 15px/1.5 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}
+
+/* memória e registradores */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.two{grid-template-columns:1fr}}
+.box{border:1px dashed var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.cell{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:8px;background:var(--soft);font:500 15px var(--mono);border:1px solid transparent}
+.cell.full{background:var(--hw-soft)}
+.cell.hit{animation:pulse .9s ease-out;border-color:var(--sig)}
+@keyframes pulse{0%{transform:scale(.96);background:var(--sig-soft)}40%{transform:scale(1.04)}100%{transform:scale(1)}}
+
+/* bits */
+.fields{display:flex;flex-wrap:wrap;gap:8px 6px;justify-content:center}
+.fld{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-family:var(--mono)}
+.fld.sel{border-color:var(--sig);background:var(--sig-soft)}
+.fld .nm{font-size:12px;color:var(--muted)}
+.bits{display:flex;gap:2px}
+.bit{width:20px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:4px;font:500 15px var(--mono);background:var(--soft)}
+.bit.f{background:var(--sig);color:#fff;animation:pulse .9s ease-out}
+.mn{font:500 20px var(--mono);text-align:center;padding:8px;border-radius:10px;background:var(--hw-soft)}
+
+/* ciclo */
+.mem{display:flex;flex-direction:column;gap:6px}
+.ins{display:grid;grid-template-columns:56px 1fr 60px;gap:8px;align-items:center;padding:8px 12px;border-radius:8px;background:var(--soft);font:500 15px var(--mono);border:1px solid transparent}
+.ins.cur{border-color:var(--sig);background:var(--sig-soft)}
+.ph{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:6px 12px;border-radius:999px;border:1px solid var(--line);font:500 14px var(--mono);color:var(--muted)}
+.chip.on{background:var(--hw);border-color:var(--hw);color:#fff}
+:root[data-theme="dark"] .chip.on{color:#06130E}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip.on{color:#06130E}}
+
+/* ULA e soma */
+.opc{border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center;font:500 15px var(--mono);background:var(--surface);transition:background .3s,border-color .3s}
+.opc.sel{background:var(--sig-soft);border-color:var(--sig)}
+.opc small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.four{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media (max-width:520px){.four{grid-template-columns:repeat(2,1fr)}}
+.out{text-align:center;font:500 22px var(--mono);padding:10px;border-radius:10px;background:var(--hw-soft)}
+.sl{display:grid;grid-template-columns:auto 1fr 40px;gap:10px;align-items:center}
+.sl input{width:100%;accent-color:var(--hw)}
+.sl output{font:500 15px var(--mono);text-align:right}
+.add{display:grid;grid-template-columns:80px repeat(5,minmax(0,52px));gap:6px;align-items:center;justify-content:center}
+.ac{height:44px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid var(--line);font:500 18px var(--mono);background:var(--surface);transition:background .3s,opacity .3s}
+.ac.on{background:var(--sig-soft);border-color:var(--sig)}
+.ac.hid{opacity:0}
+.ac.res{background:var(--hw-soft)}
+
+/* svg de circuitos */
+svg{width:100%;height:auto;display:block}
+.w polyline{fill:none;stroke:var(--off);stroke-width:2.5;stroke-linejoin:round;transition:stroke .3s}
+.w.on polyline{stroke:var(--sig)}
+.w.lo polyline{stroke:var(--lo)}
+.gate rect{fill:var(--surface);stroke:var(--line);stroke-width:1.5;transition:fill .3s,stroke .3s}
+.gate.on rect{fill:var(--sig-soft);stroke:var(--sig)}
+.gate.lo rect{fill:var(--lo-soft);stroke:var(--lo)}
+.tx{font:500 13px var(--mono);fill:var(--ink)}
+.tm{font:400 12px var(--mono);fill:var(--muted)}
+.node circle{fill:var(--off);transition:fill .3s}
+.node.on circle{fill:var(--sig)}
+.node text{font:500 14px var(--mono);fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.node.on text{fill:#fff}
+:root[data-theme="dark"] .node.on text{fill:#14201B}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .node.on text{fill:#14201B}}
+
+/* escala */
+.bar{display:grid;grid-template-columns:1fr;gap:4px}
+.bar .t{height:26px;border-radius:6px;background:var(--hw);transition:width .6s}
+.bar.sw .t{background:var(--sw)}
+.bar.sg .t{background:var(--sig)}
+.bar span{font-size:15px}
+.bar span b{font-family:var(--mono);font-weight:500}
+ul.l{margin:0;padding-left:20px;max-width:65ch}
+ul.l li{margin-bottom:8px}
+footer{font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+footer ul{margin:0;padding-left:20px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<a href="index.html#pesquisa" style="font-size:15px">&larr; Voltar ao site</a>
+
+<header class="hero">
+  <span class="kicker">de uma linha de C até os transistores</span>
+  <h1>O que acontece de verdade quando o computador faz c = a + b?</h1>
+  <p>A soma em si dura cerca de um terço de bilionésimo de segundo. Nesse instante, a linha <span class="code">int c = a + b;</span> desce cinco andares de abstração, do texto que entendemos até a eletricidade dentro do silício. No fim, aparece uma verdade curiosa: o computador não sabe somar. Ele só organiza interruptores.</p>
+  <p>Em todas as ilustrações usamos o mesmo exemplo, <b>a = 5</b> e <b>b = 3</b>. Clique, arraste e aperte os botões: cada passo mostra uma frase explicando o que está acontecendo.</p>
+  <div class="src"><b>Material didático de Winston Aparecido Andrade, baseado no vídeo</b> "Como o computador soma? Da Linguagem C ao transistor", do canal Conceito Base (7 min 49 s). <a href="https://www.youtube.com/watch?v=XuGm37M8c6Q">Assistir ao vídeo original</a>. As animações e os exemplos desta página são adaptações didáticas.</div>
+</header>
+
+<section class="sec" id="andares">
+  <span class="num">ILUSTRAÇÃO 1</span>
+  <h2>O elevador dos cinco andares</h2>
+  <p>O truque central da computação é a abstração: cada andar esconde o de baixo. Por isso podemos escrever <span class="code">c = a + b</span> sem pensar em elétrons. Vamos descer de elevador com essa única instrução.</p>
+  <div class="fig">
+    <div class="floors" id="floors"></div>
+    <div class="panel" id="fpanel"></div>
+    <div class="row" id="f1-c"></div>
+    <p class="see"><b>O que você está vendo:</b> o ponto laranja marca o andar atual. Em roxo ficam os andares de software, que humanos leem. Em verde ficam os de hardware, onde só existe tensão alta e baixa.</p>
+  </div>
+</section>
+
+<section class="sec" id="armario">
+  <span class="num">ILUSTRAÇÃO 2</span>
+  <h2>O armário e a mesa de trabalho</h2>
+  <p>O compilador traduz a linha de C para Assembly, a lista de ordens que o processador entende. Aqui usamos a arquitetura aberta RISC-V, e a linha vira quatro instruções. Pense assim: a memória é um armário de gavetas numeradas, os registradores são a mesa de trabalho, e nessa arquitetura a conta só se faz em cima da mesa.</p>
+  <div class="fig">
+    <div class="two">
+      <div class="box"><span class="lbl">MEMÓRIA (o armário)</span><div id="m-a" class="cell"></div><div id="m-b" class="cell"></div><div id="m-c" class="cell"></div></div>
+      <div class="box"><span class="lbl">REGISTRADORES (a mesa)</span><div id="r-1" class="cell"></div><div id="r-2" class="cell"></div><div id="r-3" class="cell"></div></div>
+    </div>
+    <p class="cap" id="cap2" aria-live="polite"></p>
+    <div class="row" id="f2-c"></div>
+    <p class="see"><b>O que você está vendo:</b> a gaveta que acabou de mudar ou de ser lida pisca em laranja. As instruções aqui estão simplificadas: carregar, carregar, somar, guardar.</p>
+  </div>
+</section>
+
+<section class="sec" id="bits">
+  <span class="num">ILUSTRAÇÃO 3</span>
+  <h2>Os 32 bits em gavetinhas</h2>
+  <p>O Assembly ainda é texto, e o processador não lê texto. O montador troca cada instrução por um número de 32 bits. Esse número não é uma sopa de bits: ele tem gavetinhas, e cada pedaço tem uma função. Os 7 bits da direita formam o opcode, que dá a ordem geral. Os blocos de 5 bits escolhem entre os 32 registradores da máquina.</p>
+  <div class="fig">
+    <div class="fields" id="fields"></div>
+    <div class="mn" id="mn"></div>
+    <p class="cap" id="cap3" aria-live="polite"></p>
+    <div class="row"><button class="btn main" id="flip" type="button">Trocar 1 bit</button><span class="lbl">Toque em um campo para ver a função dele.</span></div>
+    <p class="see"><b>O que você está vendo:</b> uma instrução de soma entre registradores, em exemplo didático. Não são os mesmos 32 bits do vídeo, mas seguem o mesmo formato do RISC-V.</p>
+  </div>
+</section>
+
+<section class="sec" id="ciclo">
+  <span class="num">ILUSTRAÇÃO 4</span>
+  <h2>Buscar, decodificar e executar</h2>
+  <p>Agora o binário está na memória, e o processador repete um ciclo bilhões de vezes por segundo. Um registrador especial, o contador de programa (PC), guarda o endereço da próxima instrução. Cada instrução ocupa 4 bytes, por isso o PC avança de 4 em 4.</p>
+  <div class="fig">
+    <div class="mem" id="mem"></div>
+    <div class="ph" id="ph"></div>
+    <p class="cap" id="cap4" aria-live="polite"></p>
+    <div class="row" id="f4-c"></div>
+    <p class="see"><b>O que você está vendo:</b> a linha em destaque é a instrução da vez, e o valor do PC muda assim que a busca termina.</p>
+  </div>
+</section>
+
+<section class="sec" id="ula">
+  <span class="num">ILUSTRAÇÃO 5</span>
+  <h2>A ULA faz a conta</h2>
+  <p>Os valores 5 e 3 chegam na unidade lógica e aritmética. Lá dentro existe um circuito para cada operação, e um multiplexador, que é uma chave seletora, escolhe qual resultado sai. Mude os números e a operação para ver todos os circuitos trabalhando ao mesmo tempo.</p>
+  <div class="fig">
+    <div class="sl"><span class="lbl">A</span><input type="range" id="ua" min="0" max="15" value="5" aria-label="Valor de A"><output id="uav">5</output></div>
+    <div class="sl"><span class="lbl">B</span><input type="range" id="ub" min="0" max="15" value="3" aria-label="Valor de B"><output id="ubv">3</output></div>
+    <div class="row" id="ops"></div>
+    <div class="four" id="four"></div>
+    <div class="out" id="uout"></div>
+    <p class="cap" id="cap5" aria-live="polite"></p>
+    <p class="see"><b>O que você está vendo:</b> todos os quatro circuitos calculam sempre; o multiplexador só deixa passar o que você escolheu. A ULA deste exemplo tem 4 bits, então os resultados vão de 0 a 15.</p>
+  </div>
+</section>
+
+<section class="sec" id="vaium">
+  <span class="num">ILUSTRAÇÃO 6</span>
+  <h2>O vai-um correndo pelas colunas</h2>
+  <p>Em binário, 5 é 0101 e 3 é 0011. A soma é a mesma que aprendemos na escola: coluna por coluna, da direita para a esquerda. Quando 1 + 1 dá 0, vai um, e esse vai-um encontra a próxima coluna e se propaga de novo. Cada coluna é um circuito chamado somador completo.</p>
+  <div class="fig">
+    <div class="sl"><span class="lbl">A</span><input type="range" id="sa" min="0" max="15" value="5" aria-label="Valor de A"><output id="sav">5</output></div>
+    <div class="sl"><span class="lbl">B</span><input type="range" id="sb" min="0" max="15" value="3" aria-label="Valor de B"><output id="sbv">3</output></div>
+    <div class="add" id="add"></div>
+    <p class="cap" id="cap6" aria-live="polite"></p>
+    <div class="row" id="f6-c"></div>
+    <p class="see"><b>O que você está vendo:</b> a coluna ativa fica em laranja. Experimente 15 + 1 para ver o vai-um atravessar todas as colunas. Processadores modernos usam atalhos para não esperar essa viagem, mas a essência é a mesma.</p>
+  </div>
+</section>
+
+<section class="sec" id="completo">
+  <span class="num">ILUSTRAÇÃO 7</span>
+  <h2>O somador completo por dentro</h2>
+  <p>Se abrirmos esse somador, encontramos só três tipos de porta lógica. A XOR (ou exclusivo) entrega 1 quando as entradas são diferentes e calcula o bit da soma. A AND só entrega 1 se as duas entradas forem 1 e detecta o vai-um. A OR combina os dois cenários em que um vai-um pode surgir. São duas XOR, duas AND e uma OR: cinco portas para um bit.</p>
+  <div class="fig">
+    <div class="row" id="fa-b"></div>
+    <svg viewBox="0 0 680 290" role="img" aria-label="Somador completo com cinco portas: duas XOR, duas AND e uma OR">
+      <g class="w" id="w-a"><polyline points="80,50 120,50 120,148 150,148"/><polyline points="120,58 150,58"/></g>
+      <g class="w" id="w-b"><polyline points="80,90 110,90 110,168 150,168"/><polyline points="110,78 150,78"/></g>
+      <g class="w" id="w-x"><polyline points="214,68 250,68 250,208 330,208"/><polyline points="250,68 250,58 330,58"/></g>
+      <g class="w" id="w-c"><polyline points="80,250 290,250 290,78 330,78"/><polyline points="290,228 330,228"/></g>
+      <g class="w" id="w-a1"><polyline points="214,158 430,158 430,178 470,178"/></g>
+      <g class="w" id="w-a2"><polyline points="394,218 430,218 430,198 470,198"/></g>
+      <g class="w" id="w-s"><polyline points="394,68 470,68"/></g>
+      <g class="w" id="w-o"><polyline points="534,188 580,188"/></g>
+      <g class="gate" id="g-x1"><rect x="150" y="50" width="64" height="36" rx="6"/><text class="tx" x="182" y="72" text-anchor="middle">XOR</text></g>
+      <g class="gate" id="g-a1"><rect x="150" y="140" width="64" height="36" rx="6"/><text class="tx" x="182" y="162" text-anchor="middle">AND</text></g>
+      <g class="gate" id="g-x2"><rect x="330" y="50" width="64" height="36" rx="6"/><text class="tx" x="362" y="72" text-anchor="middle">XOR</text></g>
+      <g class="gate" id="g-a2"><rect x="330" y="200" width="64" height="36" rx="6"/><text class="tx" x="362" y="222" text-anchor="middle">AND</text></g>
+      <g class="gate" id="g-o"><rect x="470" y="170" width="64" height="36" rx="6"/><text class="tx" x="502" y="192" text-anchor="middle">OR</text></g>
+      <text class="tm" x="40" y="54">A</text><text class="tm" x="40" y="94">B</text><text class="tm" x="28" y="254">vem</text>
+      <g class="node" id="n-a"><circle cx="62" cy="50" r="14"/><text x="62" y="50">0</text></g>
+      <g class="node" id="n-b"><circle cx="62" cy="90" r="14"/><text x="62" y="90">0</text></g>
+      <g class="node" id="n-c"><circle cx="62" cy="250" r="14"/><text x="62" y="250">0</text></g>
+      <g class="node" id="n-s"><circle cx="486" cy="68" r="14"/><text x="486" y="68">0</text></g>
+      <g class="node" id="n-o"><circle cx="596" cy="188" r="14"/><text x="596" y="188">0</text></g>
+      <text class="tm" x="510" y="72">soma</text>
+      <text class="tm" x="596" y="222" text-anchor="middle">vai-um</text>
+    </svg>
+    <p class="cap" id="cap7" aria-live="polite"></p>
+    <p class="see"><b>O que você está vendo:</b> fios laranja carregam o valor 1 e fios cinza carregam 0. As caixas das portas acendem quando a saída delas vale 1. Aperte os botões para mudar as entradas.</p>
+  </div>
+</section>
+
+<section class="sec" id="cmos">
+  <span class="num">ILUSTRAÇÃO 8</span>
+  <h2>Das portas aos transistores</h2>
+  <p>Uma porta lógica não é só um desenho: ela é feita de transistores, e o transistor é um interruptor que não precisa de dedo. Você aplica tensão no terminal de controle, o gate, e ele deixa a corrente passar ou a bloqueia. Usamos dois tipos. O nMOS conduz quando o gate recebe 1, e o pMOS conduz quando recebe 0, um é o espelho do outro. Juntando um de cada, nasce a porta NOT.</p>
+  <div class="fig">
+    <div class="row" id="nt-b"></div>
+    <svg viewBox="0 0 680 320" role="img" aria-label="Porta NOT feita com um transistor pMOS e um nMOS">
+      <g class="w on" id="s-1"><polyline points="340,22 340,60"/></g>
+      <g class="w" id="s-2"><polyline points="340,110 340,150"/></g>
+      <g class="w" id="s-3"><polyline points="340,150 340,190"/></g>
+      <g class="w" id="s-4"><polyline points="340,240 340,282"/></g>
+      <g class="w" id="s-in"><polyline points="90,150 250,150 250,85 290,85"/><polyline points="250,150 250,215 290,215"/></g>
+      <g class="w" id="s-out"><polyline points="340,150 520,150"/></g>
+      <g class="gate" id="t-p"><rect x="290" y="60" width="100" height="50" rx="8"/><text class="tx" x="340" y="82" text-anchor="middle">pMOS</text><text class="tm" id="tp-s" x="340" y="99" text-anchor="middle">aberto</text></g>
+      <g class="gate" id="t-n"><rect x="290" y="190" width="100" height="50" rx="8"/><text class="tx" x="340" y="212" text-anchor="middle">nMOS</text><text class="tm" id="tn-s" x="340" y="229" text-anchor="middle">aberto</text></g>
+      <text class="tm" x="340" y="14" text-anchor="middle">Vdd (tensão alta = 1)</text>
+      <text class="tm" x="340" y="304" text-anchor="middle">GND (tensão baixa = 0)</text>
+      <text class="tm" x="40" y="154">entrada</text>
+      <text class="tm" x="552" y="124" text-anchor="middle">saída</text>
+      <g class="node" id="nt-i"><circle cx="72" cy="150" r="14"/><text x="72" y="150">0</text></g>
+      <g class="node" id="nt-o"><circle cx="552" cy="150" r="14"/><text x="552" y="150">1</text></g>
+    </svg>
+    <p class="cap" id="cap8" aria-live="polite"></p>
+    <p class="see"><b>O que você está vendo:</b> fio laranja liga a saída à tensão alta, e fio azul liga a saída ao terra. Só um dos dois transistores conduz por vez, então a saída é sempre o contrário da entrada. Com quatro transistores monta-se uma NAND, e o somador completo inteiro usa 28.</p>
+  </div>
+</section>
+
+<section class="sec" id="escala">
+  <span class="num">ILUSTRAÇÃO 9</span>
+  <h2>A escala: 28 transistores por bit e 92 bilhões num chip</h2>
+  <p>São 28 transistores para somar um único bit. Um somador de 32 bits já passa de 890 (28 × 32 = 896). Um chip de notebook moderno, como o Apple M3 Max, abriga 92 bilhões. E não é só quantidade, é velocidade: mexa no controle de clock para ver quanto a luz anda em um único ciclo.</p>
+  <div class="fig">
+    <div class="bar"><span><b>28</b> transistores: um somador completo (1 bit)</span><div class="t" id="b1"></div></div>
+    <div class="bar sw"><span><b>896</b> transistores: um somador de 32 bits</span><div class="t" id="b2"></div></div>
+    <div class="bar sg"><span><b>92 bilhões</b>: Apple M3 Max</span><div class="t" id="b3"></div></div>
+    <p class="see"><b>Atenção à escala:</b> o comprimento das barras é logarítmico. Cada divisão da régua multiplica por dez, senão a primeira barra nem apareceria.</p>
+    <div class="sl"><span class="lbl">Clock</span><input type="range" id="ck" min="1" max="5" step="0.5" value="3" aria-label="Clock em gigahertz"><output id="ckv">3 GHz</output></div>
+    <p class="cap" id="cap9" aria-live="polite"></p>
+    <p class="see"><b>O que você está vendo:</b> se você contasse os 92 bilhões de transistores à razão de um por segundo, levaria quase 3.000 anos. O processador, ao contrário, pulsa bilhões de vezes por segundo.</p>
+  </div>
+</section>
+
+<section class="sec" id="afinal">
+  <h2>Afinal, o computador sabe somar?</h2>
+  <p>Ele não faz ideia do que é cinco, nem três, nem oito. Lá no nível físico só existe tensão alta e tensão baixa, algo na casa de 1 volt e 0 volt: interruptores que abrem e fecham porque outros interruptores abriram e fecharam antes deles. Dá para montar aquele somador usando apenas portas NAND (nove delas) e, na verdade, dá para construir um computador inteiro só com esse tipo de porta. A soma não mora no chip. Ela mora no jeito como organizamos os interruptores. No fim das contas, quem enxerga o 8 somos nós.</p>
+  <h2 style="margin-top:12px">As três lições</h2>
+  <ul class="l">
+    <li><b>Cada camada esconde a de baixo.</b> É isso que nos permite escrever <span class="code">c = a + b</span> sem pensar em elétrons.</li>
+    <li><b>Uma instrução é só um número.</b> Um número fatiado em compartimentos: um diz o que fazer e os outros dizem com quem.</li>
+    <li><b>No porão de qualquer programa só existem interruptores.</b> Bilhões deles, abrindo e fechando.</li>
+  </ul>
+</section>
+
+<footer>
+  <b>Sobre os números</b>
+  <ul>
+    <li>A tensão "na casa de 1 volt" é ilustrativa e varia de chip para chip.</li>
+    <li>O clock de 3 GHz é um valor típico usado como exemplo: 1 ciclo dura cerca de 0,33 ns, e nesse tempo a luz anda perto de 10 cm.</li>
+    <li>O somador ripple-carry é o modelo didático; CPUs reais usam somadores mais rápidos, como o carry-lookahead.</li>
+    <li>O número de 92 bilhões de transistores vem do anúncio do Apple M3 Max (out/2023), citado no vídeo.</li>
+  </ul>
+  <b style="margin-top:8px">Referências indicadas pelo vídeo</b>
+  <ul>
+    <li>RISC-V International. The RISC-V Instruction Set Manual, Vol. I (Unprivileged ISA).</li>
+    <li>Patterson e Hennessy. Computer Organization and Design, RISC-V Edition.</li>
+    <li>Harris e Harris. Digital Design and Computer Architecture, RISC-V Edition.</li>
+    <li>Weste e Harris. CMOS VLSI Design, 4ª ed., cap. 11 (somador espelhado de 28 transistores).</li>
+    <li>Nisan e Schocken. The Elements of Computing Systems (Nand2Tetris).</li>
+    <li>Compiler Explorer (godbolt.org), gcc para RISC-V 32 bits.</li>
+  </ul>
+  <span>Vídeo de origem: <a href="https://www.youtube.com/watch?v=XuGm37M8c6Q">Conceito Base no YouTube</a>.</span>
+</footer>
+</main>
+
+<script>
+var $=function(i){return document.getElementById(i)};
+function bin(n,w){var s=n.toString(2);while(s.length<w)s='0'+s;return s}
+function pulse(el){if(!el)return;el.classList.remove('hit');void el.offsetWidth;el.classList.add('hit')}
+function ctl(id,n,render,delay){
+  var s=0,t=null;
+  $(id+'-c').innerHTML='<button class="btn main" type="button">Próximo passo</button><button class="btn" type="button">Reproduzir</button><button class="btn" type="button">Reiniciar</button>';
+  var b=$(id+'-c').querySelectorAll('button');
+  function stop(){if(t){clearInterval(t);t=null}}
+  function go(v){s=v;render(s)}
+  b[0].onclick=function(){stop();if(s<n)go(s+1)};
+  b[1].onclick=function(){stop();go(0);t=setInterval(function(){if(s>=n){stop();return}go(s+1)},delay||1600)};
+  b[2].onclick=function(){stop();go(0)};
+  go(0);
+  return {set:function(v){stop();go(v)}};
+}
+
+/* 1. andares */
+var FL=[
+ {n:'1. Linguagem C',s:'texto que humanos escrevem',k:'sw',code:'int c = a + b;',t:'Nomes como a, b e c existem só para nós; a máquina conhece apenas endereços, as gavetas numeradas da memória.'},
+ {n:'2. Assembly RISC-V',s:'a lista de ordens do processador',k:'sw',code:'carregar a\ncarregar b\nsomar\nguardar c',t:'O compilador traduz a linha em quatro ordens: trazer a, trazer b, somar e guardar o resultado em c.'},
+ {n:'3. Código de máquina',s:'números de 32 bits',k:'hw',code:'0000000 00111 00110 000 00101 0110011',t:'O montador troca cada ordem por um número de 32 bits, repartido em campos com funções diferentes.'},
+ {n:'4. Portas lógicas',s:'XOR, AND e OR',k:'hw',code:'soma = A XOR B XOR vem\nvai = (A AND B) OR (x AND vem)',t:'Cada bit da soma passa por cinco portas lógicas (duas XOR, duas AND e uma OR) que formam o somador completo.'},
+ {n:'5. Transistores CMOS',s:'interruptores nMOS e pMOS',k:'hw',code:'1 par nMOS + pMOS = porta NOT\n28 transistores = somador de 1 bit',t:'Cada porta é feita de transistores, interruptores que abrem e fecham por tensão elétrica, sem ninguém apertar.'}
+];
+var fl=$('floors');
+FL.forEach(function(f,i){
+  var b=document.createElement('button');b.type='button';b.className='floor '+f.k;
+  b.innerHTML='<span class="mk"></span><span>'+f.n+'<small>'+f.s+'</small></span>';
+  b.onclick=function(){c1.set(i)};fl.appendChild(b);
+});
+var c1=ctl('f1',4,function(s){
+  var bs=fl.children;for(var i=0;i<bs.length;i++)bs[i].classList.toggle('on',i===s);
+  var f=FL[s];var p=$('fpanel');p.className='panel '+(f.k==='hw'?'hw':'');
+  p.innerHTML='<b>'+f.t+'</b><pre></pre>';p.querySelector('pre').textContent=f.code;
+},2200);
+
+/* 2. armário e mesa */
+var T2=[
+ 'Antes de começar: a e b estão guardados na memória, o armário. A mesa de trabalho está vazia.',
+ 'Carregar a: o 5 sai da gaveta de a e vai para o registrador r1, em cima da mesa.',
+ 'Carregar b: o 3 sai da gaveta de b e vai para o registrador r2.',
+ 'Somar: a ULA calcula r1 + r2 e o 8 aparece em r3. A conta só se faz em cima da mesa.',
+ 'Guardar: o 8 volta de r3 para a gaveta de c, no armário. A linha de C terminou.'
+];
+function setCell(id,label,val,full,hit){var e=$(id);e.innerHTML='<span>'+label+'</span><span>'+val+'</span>';e.classList.toggle('full',full);if(hit)pulse(e);else e.classList.remove('hit')}
+ctl('f2',4,function(s){
+  setCell('m-a','a','5',true,s===1);setCell('m-b','b','3',true,s===2);setCell('m-c','c',s>=4?'8':'?',s>=4,s===4);
+  setCell('r-1','r1',s>=1?'5':'vazio',s>=1,s===1);setCell('r-2','r2',s>=2?'3':'vazio',s>=2,s===2);setCell('r-3','r3',s>=3?'8':'vazio',s>=3,s===3||s===4);
+  $('cap2').innerHTML='<b>Passo '+s+' de 4.</b> '+T2[s];
+},2200);
+
+/* 3. bits */
+var FD=[
+ {n:'funct7',b:'0000000',d:'funct7: refina o detalhe da operação. Aqui um único bit decide entre somar e subtrair.'},
+ {n:'rs2',b:'00111',d:'rs2: registrador de origem 2, escolhido entre os 32 da máquina (cinco bits bastam).'},
+ {n:'rs1',b:'00110',d:'rs1: registrador de origem 1.'},
+ {n:'funct3',b:'000',d:'funct3: outro campo que refina o detalhe da operação.'},
+ {n:'rd',b:'00101',d:'rd: registrador de destino, onde o resultado vai parar.'},
+ {n:'opcode',b:'0110011',d:'opcode: os 7 bits da direita dão a ordem geral. 0110011 quer dizer operação entre registradores.'}
+];
+var f7=FD[0].b.split(''),sel3=-1;
+function draw3(fl3){
+  var h='';FD.forEach(function(f,i){
+    var bits=(i===0?f7.join(''):f.b).split('').map(function(x,j){var fl=(i===0&&j===1&&fl3)?' f':'';return '<span class="bit'+fl+'">'+x+'</span>'}).join('');
+    h+='<button type="button" class="fld'+(sel3===i?' sel':'')+'" data-i="'+i+'"><span class="nm">'+f.n+'</span><span class="bits">'+bits+'</span></button>';
+  });
+  $('fields').innerHTML=h;
+  var sub=f7.join('')==='0100000';
+  $('mn').textContent=(sub?'sub':'add')+' x5, x6, x7  ('+(sub?'subtração':'soma')+')';
+  $('cap3').innerHTML=sel3>=0?'<b>'+FD[sel3].d+'</b>':(sub?'<b>Mudamos um único bit e a instrução deixou de somar: virou subtração.</b>':'<b>Esta instrução soma x6 e x7 e guarda o resultado em x5.</b> Troque um bit para ver o que acontece.');
+  var fs=$('fields').querySelectorAll('.fld');
+  for(var k=0;k<fs.length;k++)fs[k].onclick=(function(kk){return function(){sel3=kk;draw3(false)}})(k);
+}
+$('flip').onclick=function(){f7[1]=f7[1]==='0'?'1':'0';sel3=-1;draw3(true)};
+draw3(false);
+
+/* 4. ciclo */
+var IN=['carregar a','carregar b','somar','guardar c'];
+var EX=['O 5 sai da memória e vai para um registrador.','O 3 sai da memória e vai para outro registrador.','A ULA recebe 5 e 3 e devolve 8.','O 8 é levado para a gaveta de c.'];
+var PH=['Buscar','Decodificar','Executar'];
+ctl('f4',11,function(s){
+  var i=Math.floor(s/3),p=s%3,pc=(p===0?i:i+1)*4;
+  var h='';IN.forEach(function(x,k){h+='<div class="ins'+(k===i?' cur':'')+'"><span>end. '+(k*4)+'</span><span>'+x+'</span><span>'+(k===i?'PC':'')+'</span></div>'});
+  $('mem').innerHTML=h;
+  $('ph').innerHTML='<span class="chip" style="border:0;padding-left:0">PC = '+pc+'</span>'+PH.map(function(x,k){return '<span class="chip'+(k===p?' on':'')+'">'+x+'</span>'}).join('');
+  var t=[
+   'Buscar: o PC aponta o endereço '+(i*4)+'; a memória entrega os 32 bits e o PC já avança 4 bytes.',
+   'Decodificar: os bits de "'+IN[i]+'" viram fios com ou sem tensão, e a unidade de controle liga as chaves certas.',
+   'Executar: '+EX[i]
+  ][p];
+  $('cap4').innerHTML='<b>Instrução '+(i+1)+' de 4.</b> '+t;
+},1800);
+
+/* 5. ULA */
+var OPS=[['Soma',function(a,b){return (a+b)&15}],['Subtração',function(a,b){return (a-b)&15}],['E (AND)',function(a,b){return a&b}],['OU (OR)',function(a,b){return a|b}]];
+var op=0;
+function ula(){
+  var a=+$('ua').value,b=+$('ub').value;$('uav').textContent=a;$('ubv').textContent=b;
+  $('four').innerHTML=OPS.map(function(o,i){var r=o[1](a,b);return '<div class="opc'+(i===op?' sel':'')+'">'+o[0]+'<small>'+bin(r,4)+' = '+r+'</small></div>'}).join('');
+  var r=OPS[op][1](a,b);
+  $('uout').textContent='saída: '+bin(r,4)+' = '+r;
+  $('cap5').innerHTML='<b>O multiplexador escolheu '+OPS[op][0]+':</b> '+bin(a,4)+' e '+bin(b,4)+' resultam em '+bin(r,4)+', que é '+r+'.';
+  var bs=$('ops').children;for(var i=0;i<bs.length;i++)bs[i].setAttribute('aria-pressed',i===op?'true':'false');
+}
+OPS.forEach(function(o,i){var b=document.createElement('button');b.type='button';b.className='btn';b.textContent=o[0];b.onclick=function(){op=i;ula()};$('ops').appendChild(b)});
+$('ua').oninput=ula;$('ub').oninput=ula;ula();
+
+/* 6. vai-um */
+var c6;
+function info6(){
+  var a=+$('sa').value,b=+$('sb').value,cin=0,r=[];
+  for(var k=0;k<4;k++){var x=(a>>k)&1,y=(b>>k)&1,t=x+y+cin,s=t%2,co=t>1?1:0;r.push({x:x,y:y,cin:cin,t:t,s:s,co:co});cin=co}
+  return {a:a,b:b,r:r};
+}
+function draw6(st){
+  var I=info6();$('sav').textContent=I.a;$('sbv').textContent=I.b;
+  var rows=['vai-um','A','B','soma'],h='';
+  for(var q=0;q<4;q++){
+    h+='<span class="lbl">'+rows[q]+'</span>';
+    for(var d=0;d<5;d++){
+      var k=4-d,txt='',cls='ac',on=false;
+      if(d===0){
+        if(q===3&&st===4&&I.r[3].co===1){txt='1';cls+=' res'}else cls+=' hid';
+      }else{
+        var c=I.r[k];
+        if(q===0){if(k<st){txt=c.cin}else cls+=' hid'}
+        else if(q===1)txt=c.x;
+        else if(q===2)txt=c.y;
+        else{if(k<st){txt=c.s;cls+=' res'}else cls+=' hid'}
+        if(k===st-1)on=true;
+      }
+      h+='<span class="'+cls+(on?' on':'')+'">'+txt+'</span>';
+    }
+  }
+  $('add').innerHTML=h;
+  if(st===0)$('cap6').innerHTML='<b>Escolha A e B e aperte "Próximo passo".</b> Cada coluna soma dois bits mais o vai-um que veio da direita.';
+  else{
+    var c=I.r[st-1];var t=c.x+' + '+c.y+' + '+c.cin+' = '+c.t+': fica '+c.s+' na coluna e vai '+c.co+' para a esquerda.';
+    if(st===4){var v=I.a+I.b;t+=' Resultado: '+bin(v,v>15?5:4)+' = '+v+(v>15?' (o vai-um final não cabe em 4 bits).':'.')}
+    $('cap6').innerHTML='<b>Coluna '+st+' (da direita).</b> '+t;
+  }
+}
+c6=ctl('f6',4,draw6,1700);
+$('sa').oninput=function(){c6.set(0)};$('sb').oninput=function(){c6.set(0)};
+
+/* 7. somador completo */
+var V={a:0,b:0,c:0};
+['a','b','c'].forEach(function(k){
+  var b=document.createElement('button');b.type='button';b.className='btn';b.id='fb-'+k;
+  b.onclick=function(){V[k]=1-V[k];fa()};$('fa-b').appendChild(b);
+});
+function onoff(id,v){$(id).classList.toggle('on',!!v)}
+function fa(){
+  var a=V.a,b=V.b,c=V.c,x=a^b,s=x^c,a1=a&b,a2=x&c,o=a1|a2;
+  ['a','b','c'].forEach(function(k){var e=$('fb-'+k);e.textContent=(k==='c'?'vem':k.toUpperCase())+' = '+V[k];e.setAttribute('aria-pressed',V[k]?'true':'false')});
+  onoff('w-a',a);onoff('w-b',b);onoff('w-c',c);onoff('w-x',x);onoff('w-a1',a1);onoff('w-a2',a2);onoff('w-s',s);onoff('w-o',o);
+  onoff('g-x1',x);onoff('g-a1',a1);onoff('g-x2',s);onoff('g-a2',a2);onoff('g-o',o);
+  var N={'n-a':a,'n-b':b,'n-c':c,'n-s':s,'n-o':o};
+  for(var k in N){$(k).classList.toggle('on',!!N[k]);$(k).querySelector('text').textContent=N[k]}
+  $('cap7').innerHTML='<b>'+a+' + '+b+' + '+c+' = '+(a+b+c)+':</b> a soma é '+s+' e o vai-um é '+o+'. A primeira XOR dá '+x+' ('+(x?'as entradas são diferentes':'as entradas são iguais')+').';
+}
+fa();
+
+/* 8. NOT */
+var IV=0;
+var nb=document.createElement('button');nb.type='button';nb.className='btn main';nb.onclick=function(){IV=1-IV;nt()};$('nt-b').appendChild(nb);
+function cls(id,c){$(id).setAttribute('class',c)}
+function nt(){
+  var p=IV===0,n=IV===1,out=p?1:0;
+  nb.textContent='Entrada = '+IV+' (clique para inverter)';
+  cls('t-p','gate'+(p?' on':''));cls('t-n','gate'+(n?' lo':''));
+  $('tp-s').textContent=p?'fechado (conduz)':'aberto';$('tn-s').textContent=n?'fechado (conduz)':'aberto';
+  cls('s-2','w'+(p?' on':''));cls('s-3','w'+(n?' lo':''));cls('s-4','w'+(n?' lo':''));
+  cls('s-in','w'+(IV?' on':''));cls('s-out','w'+(out?' on':' lo'));
+  cls('nt-i','node'+(IV?' on':''));$('nt-i').querySelector('text').textContent=IV;
+  cls('nt-o','node'+(out?' on':''));$('nt-o').querySelector('text').textContent=out;
+  $('cap8').innerHTML='<b>Entrada '+IV+':</b> o '+(p?'pMOS':'nMOS')+' conduz, a saída fica ligada a '+(p?'Vdd':'GND')+' e vale '+out+'. É a porta NOT: entrou '+IV+', saiu '+out+'.';
+}
+nt();
+
+/* 9. escala */
+function lg(v){return Math.log10(v)/11*100}
+$('b1').style.width=lg(28)+'%';$('b2').style.width=lg(896)+'%';$('b3').style.width=lg(92e9)+'%';
+function ck(){
+  var f=+$('ck').value,ns=1/f,cm=29.9792458/f;
+  $('ckv').textContent=f+' GHz';
+  var fmt=function(x){return x.toFixed(2).replace('.',',')};
+  $('cap9').innerHTML='<b>A '+f+' GHz</b> um ciclo dura '+fmt(ns)+' ns, e nesse tempo a luz percorre apenas cerca de '+cm.toFixed(0)+' cm.';
+}
+$('ck').oninput=ck;ck();
+</script>
+</body>
+</html>
